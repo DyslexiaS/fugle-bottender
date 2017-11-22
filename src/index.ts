@@ -2,27 +2,31 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { MessengerBot, LineBot } = require('bottender');
 const { registerRoutes } = require('bottender/express');
-const handler = require('./handler');
+import * as handler from './handler';
 const config = require('./bottender.config');
 
 const server = express();
 
+interface MyRequest {
+    rawBody: any;
+}
+
 server.use(
-  bodyParser.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf.toString();
-    },
-  })
+    bodyParser.json({
+        verify: (req: MyRequest, res: Response, buf: Buffer) => {
+            req.rawBody = buf.toString();
+        },
+    })
 );
 
 const bots = {
-  messenger: new MessengerBot(config.messenger).onEvent(handler),
-  line: new LineBot(config.line).onEvent(handler),
+    messenger: new MessengerBot(config.messenger).onEvent(handler.entry),
+    line: new LineBot(config.line).onEvent(handler.entry),
 };
 
 registerRoutes(server, bots.messenger, { path: '/messenger', verifyToken: config.messenger.verifyToken });
 registerRoutes(server, bots.line, { path: '/line' });
 
 server.listen(4000, () => {
-  console.log('server is listening on 4000 port...');
+    console.log('server is listening on 4000 port...');
 });
