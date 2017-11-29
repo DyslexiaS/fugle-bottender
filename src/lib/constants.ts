@@ -3,9 +3,9 @@ interface IHelpBtns {
 }
 
 export const HELPBTNS: IHelpBtns = {
-    WATCHLIST: '自選追蹤',
-    LINKING: '帳號綁定',
-    INFO: '股票資訊'
+    HELP_WATCHLIST: '自選追蹤',
+    HELP_LINKING: '帳號綁定',
+    HELP_INFO: '股票資訊'
 };
 export const NEWLINE_BR = '<br/>';
 export const NEWLINE_LF = '\n';

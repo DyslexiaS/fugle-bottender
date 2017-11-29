@@ -33,7 +33,7 @@ export let intentMatch = (text: string) => {
         return new Intent('remove_watchlist');
     }
     if (matchAny(text, [/新增自選/, /加入自選/, /加到自選/, /新增追蹤/, /加入追蹤/, /加到追蹤/, /刪除自選/, /自選刪除/, /刪除追蹤/, /追蹤刪除/])) {
-        return new Intent('help', 'WATCHLIST');
+        return new Intent('help', 'HELP_WATCHLIST');
     }
     if (matchAny(text, [/^LIST$/i, /^WATCHLIST$/i, /自選/, /自選追蹤/, /追蹤/])) {
         return new Intent('show_watchlist');
@@ -48,4 +48,11 @@ export let intentMatch = (text: string) => {
         return new Intent('help');
     }
     return new Intent('symbol_query');
+};
+
+export let quickReplyMatch = (text: string) => {
+    if (matchAny(text, [/^HELP_/])) {
+        return new Intent('help');
+    }
+    return new Intent('unknown');
 };
