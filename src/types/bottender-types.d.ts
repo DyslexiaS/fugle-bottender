@@ -189,102 +189,98 @@ export namespace LineConnector {
 
 }
 
-export namespace LineContext {
-    namespace prototype {
-        const client: any;
+export interface LineContext {
+        client: any;
 
-        const event: any;
+        event: any;
 
-        const isHandled: any;
+        isHandled: any;
 
-        const isReplied: any;
+        isReplied: any;
 
-        const platform: string;
+        platform: string;
 
-        const session: any;
+        session: any;
 
-        const state: {
-        };
+        state: any;
+        getLinkedRichMenu(...args: any[]): void;
 
-        function getLinkedRichMenu(...args: any[]): void;
+        linkRichMenu(...args: any[]): void;
 
-        function linkRichMenu(...args: any[]): void;
+        pushAudio(...args: any[]): void;
 
-        function pushAudio(...args: any[]): void;
+        pushButtonTemplate(...args: any[]): void;
 
-        function pushButtonTemplate(...args: any[]): void;
+        pushCarouselTemplate(...args: any[]): void;
 
-        function pushCarouselTemplate(...args: any[]): void;
+        pushConfirmTemplate(...args: any[]): void;
 
-        function pushConfirmTemplate(...args: any[]): void;
+        pushImage(...args: any[]): void;
 
-        function pushImage(...args: any[]): void;
+        pushImageCarouselTemplate(...args: any[]): void;
 
-        function pushImageCarouselTemplate(...args: any[]): void;
+        pushImagemap(...args: any[]): void;
 
-        function pushImagemap(...args: any[]): void;
+        pushLocation(...args: any[]): void;
 
-        function pushLocation(...args: any[]): void;
+        pushSticker(...args: any[]): void;
 
-        function pushSticker(...args: any[]): void;
+        pushText(...args: any[]): void;
 
-        function pushText(...args: any[]): void;
+        pushVideo(...args: any[]): void;
 
-        function pushVideo(...args: any[]): void;
+        replyAudio(...args: any[]): void;
 
-        function replyAudio(...args: any[]): void;
+        replyButtonTemplate(...args: any[]): void;
 
-        function replyButtonTemplate(...args: any[]): void;
+        replyCarouselTemplate(...args: any[]): void;
 
-        function replyCarouselTemplate(...args: any[]): void;
+        replyConfirmTemplate(...args: any[]): void;
 
-        function replyConfirmTemplate(...args: any[]): void;
+        replyImage(...args: any[]): void;
 
-        function replyImage(...args: any[]): void;
+        replyImageCarouselTemplate(...args: any[]): void;
 
-        function replyImageCarouselTemplate(...args: any[]): void;
+        replyImagemap(...args: any[]): void;
 
-        function replyImagemap(...args: any[]): void;
+        replyLocation(...args: any[]): void;
 
-        function replyLocation(...args: any[]): void;
+        replySticker(...args: any[]): void;
 
-        function replySticker(...args: any[]): void;
+        replyText(...args: any[]): void;
 
-        function replyText(...args: any[]): void;
+        replyVideo(...args: any[]): void;
 
-        function replyVideo(...args: any[]): void;
+        resetState(...args: any[]): void;
 
-        function resetState(...args: any[]): void;
+        sendAudio(...args: any[]): void;
 
-        function sendAudio(...args: any[]): void;
+        sendButtonTemplate(...args: any[]): void;
 
-        function sendButtonTemplate(...args: any[]): void;
+        sendCarouselTemplate(...args: any[]): void;
 
-        function sendCarouselTemplate(...args: any[]): void;
+        sendConfirmTemplate(...args: any[]): void;
 
-        function sendConfirmTemplate(...args: any[]): void;
+        sendImage(...args: any[]): void;
 
-        function sendImage(...args: any[]): void;
+        sendImageCarouselTemplate(...args: any[]): void;
 
-        function sendImageCarouselTemplate(...args: any[]): void;
+        sendImagemap(...args: any[]): void;
 
-        function sendImagemap(...args: any[]): void;
+        sendLocation(...args: any[]): void;
 
-        function sendLocation(...args: any[]): void;
+        sendSticker(...args: any[]): void;
 
-        function sendSticker(...args: any[]): void;
+        sendText(...args: any[]): void;
 
-        function sendText(...args: any[]): void;
+        sendVideo(...args: any[]): void;
 
-        function sendVideo(...args: any[]): void;
+        setState(...args: any[]): void;
 
-        function setState(...args: any[]): void;
+        typing(...args: any[]): void;
 
-        function typing(...args: any[]): void;
+        unlinkRichMenu(...args: any[]): void;
 
-        function unlinkRichMenu(...args: any[]): void;
-
-    }
 
 }
 
@@ -392,84 +388,80 @@ export namespace MessengerConnector {
 
 }
 
-export namespace MessengerContext {
-    namespace prototype {
-        const client: any;
+export interface MessengerContext {
+        client: any;
 
-        const event: any;
+        event: any;
 
-        const isHandled: any;
+        isHandled: any;
 
-        const platform: string;
+        platform: string;
 
-        const session: any;
+        session: any;
 
-        const state: {
-        };
+        state: any;
 
-        function associateLabel(...args: any[]): void;
+        associateLabel(...args: any[]): void;
 
-        function dissociateLabel(...args: any[]): void;
+        dissociateLabel(...args: any[]): void;
 
-        function getAssociatedLabels(...args: any[]): void;
+        getAssociatedLabels(...args: any[]): void;
 
-        function markSeen(...args: any[]): void;
+        markSeen(...args: any[]): void;
 
-        function passThreadControl(...args: any[]): void;
+        passThreadControl(...args: any[]): void;
 
-        function passThreadControlToPageInbox(...args: any[]): void;
+        passThreadControlToPageInbox(...args: any[]): void;
 
-        function resetState(...args: any[]): void;
+        resetState(...args: any[]): void;
 
-        function sendAirlineBoardingPassTemplate(...args: any[]): void;
+        sendAirlineBoardingPassTemplate(...args: any[]): void;
 
-        function sendAirlineCheckinTemplate(...args: any[]): void;
+        sendAirlineCheckinTemplate(...args: any[]): void;
 
-        function sendAirlineFlightUpdateTemplate(...args: any[]): void;
+        sendAirlineFlightUpdateTemplate(...args: any[]): void;
 
-        function sendAirlineItineraryTemplate(...args: any[]): void;
+        sendAirlineItineraryTemplate(...args: any[]): void;
 
-        function sendAttachment(...args: any[]): void;
+        sendAttachment(...args: any[]): void;
 
-        function sendAudio(...args: any[]): void;
+        sendAudio(...args: any[]): void;
 
-        function sendButtonTemplate(...args: any[]): void;
+        sendButtonTemplate(...args: any[]): void;
 
-        function sendFile(...args: any[]): void;
+        sendFile(...args: any[]): void;
 
-        function sendGenericTemplate(...args: any[]): void;
+        sendGenericTemplate(...args: any[]): void;
 
-        function sendImage(...args: any[]): void;
+        sendImage(...args: any[]): void;
 
-        function sendListTemplate(...args: any[]): void;
+        sendListTemplate(...args: any[]): void;
 
-        function sendMediaTemplate(...args: any[]): void;
+        sendMediaTemplate(...args: any[]): void;
 
-        function sendMessage(...args: any[]): void;
+        sendMessage(...args: any[]): void;
 
-        function sendOpenGraphTemplate(...args: any[]): void;
+        sendOpenGraphTemplate(...args: any[]): void;
 
-        function sendQuickReplies(...args: any[]): void;
+        sendQuickReplies(...args: any[]): void;
 
-        function sendReceiptTemplate(...args: any[]): void;
+        sendReceiptTemplate(...args: any[]): void;
 
-        function sendTemplate(...args: any[]): void;
+        sendTemplate(...args: any[]): void;
 
-        function sendText(...args: any[]): void;
+        sendText(...args: any[]): void;
 
-        function sendVideo(...args: any[]): void;
+        sendVideo(...args: any[]): void;
 
-        function setState(...args: any[]): void;
+        setState(...args: any[]): void;
 
-        function takeThreadControl(...args: any[]): void;
+        takeThreadControl(...args: any[]): void;
 
-        function typing(...args: any[]): void;
+        typing(...args: any[]): void;
 
-        function typingOff(...args: any[]): void;
+        typingOff(...args: any[]): void;
 
-        function typingOn(...args: any[]): void;
-
-    }
+        typingOn(...args: any[]): void;
 
 }
 

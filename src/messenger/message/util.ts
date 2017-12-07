@@ -1,21 +1,5 @@
+import { Message } from './index';
 const NEWLINE_LF = '\n';
-
-class QuickReply {
-    content_type: string;
-    title: string;
-    payload: string | number;
-}
-
-class Message {
-    text: string;
-    quick_replies: QuickReply[];
-    constructor(_text: string = '', _quick: QuickReply[] = []) {
-        this.text = _text;
-        if (_quick.length) {
-            this.quick_replies = _quick;
-        }
-    }
-}
 
 export let helpWatchlist = () => {
     const textNewLine = NEWLINE_LF;

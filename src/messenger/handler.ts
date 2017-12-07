@@ -1,13 +1,8 @@
 import { intentMatch, quickReplyMatch } from '../lib/intent';
 import * as general from './controller/general';
+import { MessengerContext } from 'bottender-types';
 
-interface Context {
-    event: any;
-    sendText(...args: any[]): void;
-    sendMessage(...args: any[]): void;
-}
-
-export let entry = async (context: Context) => {
+export let entry = async (context: MessengerContext) => {
     const { isText, isQuickReply, text, quickReply, message } = context.event;
     if (isQuickReply) {
         console.log(context.event);

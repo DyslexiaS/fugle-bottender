@@ -1,4 +1,4 @@
-class Intent {
+export class Intent {
     name: string;
     data: string;
     constructor(_name: string, _data: string = '') {
