@@ -12,6 +12,7 @@ export let entry = async (context: MessengerContext) => {
         switch (name) {
             case 'help':
                 await general.help(context, payload);
+                break;
             default:
                 return;
         }
@@ -23,6 +24,16 @@ export let entry = async (context: MessengerContext) => {
         switch (name) {
             case 'help':
                 await general.help(context, data);
+                break;
+            case 'greeting':
+                await general.greeting(context);
+                break;
+            case 'thanks':
+                await general.thanks(context);
+                break;
+            case 'smile':
+                await general.smile(context);
+                break;
             default:
                 return;
         }

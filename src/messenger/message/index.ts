@@ -19,3 +19,17 @@ export class Message {
         }
     }
 }
+
+export class Button {
+    type: string;
+    title: string;
+    url?: string;
+    payload?: string;
+    constructor(options: any) {
+        const { type, title, url, payload } = options;
+        if (type) { this.type = type; }
+        if (title) { this.title = title; }
+        if (url) { this.url = url; }
+        if (payload) { this.payload = payload; }
+    }
+}

@@ -1,14 +1,30 @@
 import * as util from '../message/util';
 import { HELPBTNS } from '../../lib/constants';
-import { Message, QuickReply } from '../message/index';
+import { Button, Message, QuickReply } from '../message/index';
 
 interface Context {
     event: any;
     sendText(...args: any[]): void;
     sendMessage(...args: any[]): void;
+    sendButtonTemplate(title: string, buttons: Button[]): void;
 }
 
-export let help = async (context: Context, type: string) => {
+export const smile = async (context: Context) => {
+    const message = util.smile();
+    await context.sendMessage(message);
+};
+
+export const greeting = async (context: Context) => {
+    const { title, buttons } = util.greeting();
+    await context.sendButtonTemplate(title, buttons);
+};
+
+export const thanks = async (context: Context) => {
+    const message = util.thanks();
+    await context.sendMessage(message);
+};
+
+export const help = async (context: Context, type: string) => {
     if (type === 'HELP_WATCHLIST') {
         const message = util.helpWatchlist();
         await context.sendMessage(message);
@@ -46,4 +62,18 @@ export let help = async (context: Context, type: string) => {
         });
         await context.sendMessage(new Message(text, quickReplies));
     }
+};
+
+export const notFound = async (context: Context) => {
+    const { title, buttons } = util.notFound();
+    await context.sendButtonTemplate(title, buttons);
+};
+
+export const dataNotFound = async (context: Context) => {
+    const message = util.dataNotFound();
+    await context.sendMessage(message);
+};
+export const groupAlert = async (context: Context) => {
+    const message = util.groupAlert();
+    await context.sendMessage(message);
 };
