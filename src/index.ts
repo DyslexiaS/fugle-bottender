@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { MessengerBot, LineBot } = require('bottender');
+const { MessengerBot, LineBot, middleware } = require('bottender');
 const { registerRoutes } = require('bottender/express');
 import * as lineHandler from './line/handler';
 import * as messengerHandler from './messenger/handler';
+import { typing } from './messenger/middleware/typing_action';
 const config = require('./bottender.config');
 
 const server = express();
@@ -21,7 +22,12 @@ server.use(
 );
 
 const bots = {
-    messenger: new MessengerBot(config.messenger).onEvent(messengerHandler.entry),
+    messenger: new MessengerBot(config.messenger).onEvent(
+        middleware([
+            typing,
+            messengerHandler.entry,
+        ])
+    ),
     line: new LineBot(config.line).onEvent(lineHandler.entry),
 };
 
