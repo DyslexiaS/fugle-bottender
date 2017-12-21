@@ -5,6 +5,8 @@ const { registerRoutes } = require('bottender/express');
 import * as lineHandler from './line/handler';
 import * as messengerHandler from './messenger/handler';
 import { typing } from './messenger/middleware/typing_action';
+import { fullwidth } from './messenger/middleware/fullwidth';
+import { log } from './messenger/middleware/logger';
 const config = require('./bottender.config');
 
 const server = express();
@@ -25,6 +27,8 @@ const bots = {
     messenger: new MessengerBot(config.messenger).onEvent(
         middleware([
             typing,
+            fullwidth,
+            log,
             messengerHandler.entry,
         ])
     ),

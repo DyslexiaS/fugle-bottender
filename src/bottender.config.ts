@@ -8,5 +8,8 @@ module.exports = {
     line: {
         channelSecret: '__FILL_YOUR_SECRET_HERE__',
         accessToken: '__FILL_YOUR_TOKEN_HERE__',
+    },
+    api: {
+        host: 'https://test.fugle.tw',
     }
 };
