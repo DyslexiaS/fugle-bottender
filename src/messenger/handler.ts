@@ -3,9 +3,12 @@ import * as general from './controller/general';
 import { MessengerContext } from 'bottender-types';
 
 export let entry = async (context: MessengerContext) => {
-    const { isText, isQuickReply, text, quickReply, message } = context.event;
+    const {
+        isText, isQuickReply, isPostback,
+        text, quickReply, postback, message
+    } = context.event;
     if (isQuickReply) {
-        console.log(context.event);
+        // console.log(context.event);
         console.log(quickReply);
         const { payload } = quickReply;
         const { name } = quickReplyMatch(payload);
@@ -17,7 +20,8 @@ export let entry = async (context: MessengerContext) => {
                 return;
         }
     } else if (isText) {
-        console.log(context.event);
+        // console.log(context.event);
+        console.log(text);
         const { name, data } = intentMatch(text);
         console.log(name, data);
         await context.sendText(`Hello ${context.event.text} ${name}`);
@@ -37,5 +41,7 @@ export let entry = async (context: MessengerContext) => {
             default:
                 return;
         }
+    } else if (isPostback) {
+        console.log(postback);
     }
 };

@@ -2,58 +2,61 @@ import { MessengerContext } from 'bottender-types';
 const logger = require('../../lib/logger');
 
 export let log = async (context: MessengerContext, next: any) => {
-    const { isText, isQuickReply, text, quickReply, message } = context.event;
-    /*
-    if (event.optin && event.optin.ref) {
+    const {
+        isText, isQuickReply, isOptin, isSticker, isPostback,
+        text, quickReply, postback,
+        message, rawEvent,
+    } = context.event;
+    const { sender: { id: fbUserID }, timestamp } = rawEvent;
+    const userID = `facebook-${fbUserID}`;
+    if (isOptin) {
         logger.info({
-            id: userId,
-            timestamp: event.timestamp,
+            id: userID,
+            timestamp: timestamp,
             event: 'optin',
-            message: event.optin.ref
+            message: rawEvent.optin.ref
         });
-    } else if (event.message && event.message.quick_reply) {
-        const text = event.message.quick_reply.payload.trim().toUpperCase();
+    } else if (isQuickReply) {
+        const msg = quickReply.payload.trim().toUpperCase();
         logger.info({
-            id: userId,
-            timestamp: event.timestamp,
+            id: userID,
+            timestamp: timestamp,
             event: 'quick',
-            message: text
+            message: msg
         });
-    } else if (event.message && event.message.text) {
-        const text = event.message.text.trim().toUpperCase();
+    } else if (isText) {
+        const msg = text.trim().toUpperCase();
         logger.info({
-            id: userId,
-            timestamp: event.timestamp,
+            id: userID,
+            timestamp: timestamp,
             event: 'message',
-            message: text
+            message: msg
         });
-    } else if (event.message && event.message.sticker_id) {
+    } else if (isSticker) {
         logger.info({
-            id: userId,
-            timestamp: event.timestamp,
+            id: userID,
+            timestamp: timestamp,
             event: 'sticker',
-            message: event.message.sticker_id
+            message: message.sticker_id
         });
-    } else if (event.postback && event.postback.payload) {
-        const text = event.postback.payload.trim().toUpperCase();
+    } else if (isPostback) {
+        const msg = postback.payload.trim().toUpperCase();
         logger.info({
-            id: userId,
-            timestamp: event.timestamp,
+            id: userID,
+            timestamp: timestamp,
             event: 'postback',
-            message: text
+            message: msg
         });
-    } else if (event.account_linking) {
-        const linkStatus = event.account_linking.status;
+    } else if (rawEvent.account_linking) {
+        const linkStatus = rawEvent.account_linking.status;
         logger.info({
-            id: userId,
-            timestamp: event.timestamp,
+            id: userID,
+            timestamp: timestamp,
             event: 'account_linking',
             message: linkStatus
         });
     } else {
-        logger.error(userId, event.timestamp, `Webhook received unknown event: ${JSON.stringify(event)}`);
-        console.log('Webhook received unknown event: ', event);
+        // console.log('Webhook received other event: ', JSON.stringify(context.event));
     }
-    */
     await next();
 };

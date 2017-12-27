@@ -36,7 +36,8 @@
     "bottender": "0.14.10",
     "lodash": "^4.17.4",
     "nodemon": "1.12.1",
-    "request": "^2.78.0"
+    "request": "^2.78.0",
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.2",

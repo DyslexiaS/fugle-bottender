@@ -1,11 +1,11 @@
 const rp = require('request-promise');
-const config = require('../bottender.config');
+const config = require('../config');
 
 const log = async (id: string, type: string, timestamp: string, event: string, message: string) => {
     try {
         const result = await rp({
             method: 'POST',
-            uri: `${config.apiServer}/bot/log`,
+            uri: `${config.api.host}/bot/log`,
             body: {
                 id: id,
                 type: type,

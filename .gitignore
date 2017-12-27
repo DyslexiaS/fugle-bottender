@@ -34,4 +34,5 @@ Thumbs.db
 # Ignore built ts files
 dist/**/*
 
-bottender.config.js
+config.ts
+bottender.config.ts

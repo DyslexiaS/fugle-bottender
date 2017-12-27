@@ -7,7 +7,7 @@ import * as messengerHandler from './messenger/handler';
 import { typing } from './messenger/middleware/typing_action';
 import { fullwidth } from './messenger/middleware/fullwidth';
 import { log } from './messenger/middleware/logger';
-const config = require('./bottender.config');
+const config = require('./config');
 
 const server = express();
 
