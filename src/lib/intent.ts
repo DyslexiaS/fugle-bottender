@@ -13,7 +13,7 @@ const matchAny = (text: string, array: Array<RegExp>) => {
     });
 };
 
-export let intentMatch = (text: string) => {
+export const intentMatch = (text: string) => {
     if (matchAny(text, [/^hi.*/i, /^hello.*/i, /^[你|妳|您]好.*/i, /^哈囉/])) {
         return new Intent('greeting');
     }
@@ -50,7 +50,14 @@ export let intentMatch = (text: string) => {
     return new Intent('symbol_query');
 };
 
-export let quickReplyMatch = (text: string) => {
+export const quickReplyMatch = (text: string) => {
+    if (matchAny(text, [/^HELP_/])) {
+        return new Intent('help');
+    }
+    return new Intent('unknown');
+};
+
+export const postbackMatch = (text: string) => {
     if (matchAny(text, [/^HELP_/])) {
         return new Intent('help');
     }
