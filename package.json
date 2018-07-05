@@ -33,7 +33,7 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "bottender": "0.14.27",
+    "bottender": "0.15.0-rc.2",
     "lodash": "^4.17.4",
     "nodemon": "1.12.1",
     "request": "^2.78.0",
