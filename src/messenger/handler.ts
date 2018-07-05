@@ -1,8 +1,8 @@
 import { intentMatch, quickReplyMatch, postbackMatch } from '../lib/intent';
 import * as general from './controller/general';
-import { MessengerContext } from 'bottender-types';
+import * as symbol from './controller/symbol';
 
-export let entry = async (context: MessengerContext) => {
+export let entry = async (context: any) => {
     const {
         isText, isQuickReply, isPostback,
         text, quickReply, postback, message
@@ -37,6 +37,9 @@ export let entry = async (context: MessengerContext) => {
             case 'linking_status':
                 break;
             case 'suggest':
+                break;
+            case 'symbol_query':
+                await symbol.search(context, text);
                 break;
             default:
                 return;

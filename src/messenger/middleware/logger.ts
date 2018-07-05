@@ -1,7 +1,6 @@
-import { MessengerContext } from 'bottender-types';
 const logger = require('../../lib/logger');
 
-export let log = async (context: MessengerContext, next: any) => {
+export let log = async (context: any, next: any) => {
     const {
         isText, isQuickReply, isOptin, isSticker, isPostback,
         text, quickReply, postback,

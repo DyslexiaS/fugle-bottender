@@ -1,6 +1,4 @@
-import { MessengerContext } from 'bottender-types';
-
-export let fullwidth = async (context: MessengerContext, next: any) => {
+export let fullwidth = async (context: any, next: any) => {
     const { isText } = context.event;
     let { text } = context.event;
     if (isText) {
