@@ -24,30 +24,30 @@ export const intentMatch = (text: string) => {
         return new Intent('smile');
     }
     if (matchAny(text, [/^ADD\s*(.+)$/i, /^[+＋]\s*(.+)$/])) {
-        return new Intent('add_symbols');
+        return new Intent('addSymbols');
     }
     if (matchAny(text, [/^DEL\s*(.+)$/i, /^[-－]\s*(.+)$/])) {
-        return new Intent('del_symbols');
+        return new Intent('delSymbols');
     }
     if (matchAny(text, [/^CLEAR$/i])) {
-        return new Intent('remove_watchlist');
+        return new Intent('removeWatchlist');
     }
     if (matchAny(text, [/新增自選/, /加入自選/, /加到自選/, /新增追蹤/, /加入追蹤/, /加到追蹤/, /刪除自選/, /自選刪除/, /刪除追蹤/, /追蹤刪除/])) {
         return new Intent('help', 'HELP_WATCHLIST');
     }
+    if (matchAny(text, [/^HELP\s*(.*)/i, /^怎麼.*/, /^[?？]\s*(.*)/i])) {
+        return new Intent('help');
+    }
     if (matchAny(text, [/^LIST$/i, /^WATCHLIST$/i, /自選/, /自選追蹤/, /追蹤/])) {
-        return new Intent('show_watchlist');
+        return new Intent('showWatchlist');
     }
     if (matchAny(text, [/^FUGLE$/i, /^連結$/, /^同步$/, /^綁定$/])) {
-        return new Intent('linking_status');
+        return new Intent('linkingStatus');
     }
     if (matchAny(text, [/^#$/])) {
         return new Intent('suggest');
     }
-    if (matchAny(text, [/^HELP\s*(.*)/i, /^怎麼.*/, /^[?？]\s*(.*)/i])) {
-        return new Intent('help');
-    }
-    return new Intent('symbol_query');
+    return new Intent('symbolQuery');
 };
 
 export const quickReplyMatch = (text: string) => {
@@ -58,7 +58,7 @@ export const quickReplyMatch = (text: string) => {
 };
 
 export const postbackMatch = (text: string) => {
-    if (matchAny(text, [/^HELP_/])) {
+    if (matchAny(text, [/^HELP/])) {
         return new Intent('help');
     }
     return new Intent('unknown');
