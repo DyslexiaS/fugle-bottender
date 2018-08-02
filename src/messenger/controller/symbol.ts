@@ -9,57 +9,52 @@ const wordsSplitter = require('../../lib/words_splitter');
 // const utils = require('../lib/utils');
 const rp = require('request-promise');
 import * as util from '../message/util';
+import * as general from './general';
 import { Button, Message, QuickReply } from '../message/index';
 
-interface Context {
-    event: any;
-    sendText(...args: any[]): void;
-    sendMessage(...args: any[]): void;
-    sendButtonTemplate(title: string, buttons: Button[]): void;
-}
-
-export const search = async (context: Context, text: string) => {
-    const inputText = text;
+export const search = async (context: any, inputText: string) => {
     try {
-        const wordresult = wordsSplitter.extractor(inputText);
-        const searchText = `${wordresult.remain} ${wordresult.types.join(' ')}`.trim();
+        const wordResult = wordsSplitter.extractor(inputText);
+        const searchText = `${wordResult.remain} ${wordResult.types.join(' ')}`.trim();
         const result = await rp({
             method: 'GET',
             uri: `${config.api.host}/search/bot?q=${encodeURIComponent(searchText)}`,
             json: true
         });
         if (_.isEmpty(result) || result.message === 'notfind') {
-            // return session.replaceDialog('/data_not_found');
+            await general.dataNotFound(context);
+            return;
         }
         if ('elements' in result) {
-            const eLength = result.elements.length;
+            const elLength = result.elements.length;
             // session.dialogData.elements = result.elements;
-            if (eLength === 0) {
-                // return session.replaceDialog('/data_not_found');
-            } else if (eLength > 3) {
-                const text = `您的搜尋總共傳回 ${eLength} 份資料, 請問您要全部顯示嗎?`;
-                /*
-                return builder.Prompts.choice(session, text, ['我想重新搜尋', '好'], {
-                    maxRetries: 0
-                });
-                */
+            if (elLength === 0) {
+                await general.dataNotFound(context);
+                return;    
+            } else if (elLength > 3) {
+                const text = `您的搜尋總共傳回 ${elLength} 份資料, 請問您要全部顯示嗎?`;
+                const quickReplies = [
+                    new QuickReply('text', '我想重新搜尋', 'SEARCH_RESET'),
+                    new QuickReply('text', '好', 'SEARCH_ALL'),
+                ];
+                await context.sendMessage(new Message(text, quickReplies));
             }
             // return next();
         }
         if ('cards' in result) {
-            const cLength = result.cards.length;
+            const caLength = result.cards.length;
             // session.dialogData.cards = result.cards;
-            if (cLength === 0) {
-                // return session.replaceDialog('/data_not_found');
-            } else if (cLength > 3) {
-                /*
-                const text = `您的搜尋總共傳回 ${cLength} 份資料, 請問您要全部顯示嗎?`;
-                return builder.Prompts.choice(session, text, ['我想重新搜尋', '好'], {
-                    maxRetries: 0
-                });
-                */
+            if (caLength === 0) {
+                await general.dataNotFound(context);
+                return;    
+            } else if (caLength > 3) {
+                const text = `您的搜尋總共傳回 ${caLength} 份資料, 請問您要全部顯示嗎?`;
+                const quickReplies = [
+                    new QuickReply('text', '我想重新搜尋', 'SEARCH_RESET'),
+                    new QuickReply('text', '好', 'SEARCH_ALL'),
+                ];
+                await context.sendMessage(new Message(text, quickReplies));
             }
-            // return next();
         }
     } catch (err) {
         console.error(err);
@@ -150,7 +145,7 @@ export const search = async (context: Context, text: string) => {
     */
 };
 
-export const showImportant = async (context: Context) => {
+export const showImportant = async (context: any) => {
     /*
     const chunks = args.data.split('-');
     const symbolId = chunks[0];

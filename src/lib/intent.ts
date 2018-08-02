@@ -47,12 +47,17 @@ export const intentMatch = (text: string) => {
     if (matchAny(text, [/^#$/])) {
         return new Intent('suggest');
     }
-    return new Intent('symbolQuery');
+    return new Intent('search');
 };
 
 export const quickReplyMatch = (text: string) => {
+    // should separate quickreply/postback "ACTION" & "normal input text" in controllers
+    // ...
     if (matchAny(text, [/^HELP_/])) {
-        return new Intent('help');
+        return new Intent('help'); // => should have 'data': WATCHLIST/SYMBOL/LINK (catch by regex)
+    }
+    if (matchAny(text, [/^SEARCH_/])) { // => should init with 'data': RESET/ALL (catch by regex)
+        return new Intent('search');
     }
     return new Intent('unknown');
 };
