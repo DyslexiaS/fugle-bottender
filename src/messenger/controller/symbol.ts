@@ -30,7 +30,7 @@ export const search = async (context: any, inputText: string) => {
             // session.dialogData.elements = result.elements;
             if (elLength === 0) {
                 await general.dataNotFound(context);
-                return;    
+                return;
             } else if (elLength > 3) {
                 const text = `您的搜尋總共傳回 ${elLength} 份資料, 請問您要全部顯示嗎?`;
                 const quickReplies = [
@@ -46,7 +46,7 @@ export const search = async (context: any, inputText: string) => {
             // session.dialogData.cards = result.cards;
             if (caLength === 0) {
                 await general.dataNotFound(context);
-                return;    
+                return;
             } else if (caLength > 3) {
                 const text = `您的搜尋總共傳回 ${caLength} 份資料, 請問您要全部顯示嗎?`;
                 const quickReplies = [
