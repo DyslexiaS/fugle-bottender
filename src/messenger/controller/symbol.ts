@@ -1,6 +1,6 @@
 // const request = require('request-promise');
 const _ = require('lodash');
-// const Promise = require('bluebird');
+const bluebird = require('bluebird');
 // const builder = require('botbuilder');
 // const customMessage = require('../message/custom_message');
 // const symbolMessage = require('../message/symbol_message');
@@ -8,6 +8,7 @@ const config = require('../../config');
 const wordsSplitter = require('../../lib/words_splitter');
 // const utils = require('../lib/utils');
 const rp = require('request-promise');
+const symbolMessage = require('../message/symbol');
 import * as util from '../message/util';
 import * as general from './general';
 import { Button, Message, QuickReply } from '../message/index';
@@ -25,7 +26,7 @@ export const search = async (context: any, inputText: string) => {
             await general.dataNotFound(context);
             return;
         }
-        if ('elements' in result) {
+        if (result.elements) {
             const elLength = result.elements.length;
             // session.dialogData.elements = result.elements;
             if (elLength === 0) {
@@ -38,10 +39,17 @@ export const search = async (context: any, inputText: string) => {
                     new QuickReply('text', '好', 'SEARCH_ALL'),
                 ];
                 await context.sendMessage(new Message(text, quickReplies));
+            } else {
+                await bluebird.each(result.elements, async (symbolComplex: any) => {
+                    const { priceInfo } = symbolComplex;
+                    await context.sendMessage(new Message(priceInfo));
+                    const defaultInfo = await symbolMessage.defaultInfo(symbolComplex);
+                    console.log(defaultInfo);
+                    await context.sendGenericTemplate(defaultInfo);
+                });
             }
-            // return next();
         }
-        if ('cards' in result) {
+        if (result.cards) {
             const caLength = result.cards.length;
             // session.dialogData.cards = result.cards;
             if (caLength === 0) {
@@ -54,6 +62,13 @@ export const search = async (context: any, inputText: string) => {
                     new QuickReply('text', '好', 'SEARCH_ALL'),
                 ];
                 await context.sendMessage(new Message(text, quickReplies));
+            } else {
+                /*
+                const imageInfo = symbolMessage.imageInfo(session, searchText, cards, source);
+                imageInfo.forEach((message) => {
+                    session.send(message);
+                });
+                */
             }
         }
     } catch (err) {

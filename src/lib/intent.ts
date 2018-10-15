@@ -47,7 +47,7 @@ export const intentMatch = (text: string) => {
     if (matchAny(text, [/^#$/])) {
         return new Intent('suggest');
     }
-    return new Intent('search');
+    return new Intent('search', text);
 };
 
 export const quickReplyMatch = (text: string) => {

@@ -33,6 +33,7 @@
     "testEnvironment": "node"
   },
   "dependencies": {
+    "bluebird": "^3.5.2",
     "bottender": "0.15.7",
     "lodash": "^4.17.4",
     "nodemon": "1.12.1",

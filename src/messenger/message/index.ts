@@ -33,3 +33,24 @@ export class Button {
         if (payload) { this.payload = payload; }
     }
 }
+
+export class Element {
+    title: string;
+    image_url?: string;
+    subtitle?: string;
+    default_action: {
+      type: string;
+      url?: string;
+      messenger_extensions: boolean;
+      webview_height_ratio?: string;
+    };
+    buttons?: Button[];
+    constructor(options: any) {
+        const { title, image_url, subtitle, default_action, buttons } = options;
+        if (title) { this.title = title; }
+        if (image_url) { this.image_url = image_url; }
+        if (subtitle) { this.subtitle = subtitle; }
+        if (default_action) { this.default_action = default_action; }
+        if (buttons) { this.buttons = buttons; }
+    }
+}
