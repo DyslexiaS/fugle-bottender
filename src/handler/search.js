@@ -1,54 +1,64 @@
-// const request = require('request-promise');
-const _ = require('lodash');
-const bluebird = require('bluebird');
-// const builder = require('botbuilder');
-// const customMessage = require('../message/custom_message');
-// const symbolMessage = require('../message/symbol_message');
-const config = require('../../config');
-const wordsSplitter = require('../../lib/words_splitter');
-// const utils = require('../lib/utils');
+// const util = require('./lib/message/util');
 const rp = require('request-promise');
-const symbolMessage = require('../message/symbol');
-import * as util from '../message/util';
-import * as general from './general';
-import { Button, Message, QuickReply } from '../message/index';
+const _ = require('lodash');
+const Promise = require('bluebird');
+const wordsSplitter = require('../lib/word_splitter');
+const { handleDataNotFound } = require('./general');
+const stockMsg = require('../lib/message/stock');
 
-export const search = async (context: any, inputText: string) => {
+const handleSearch = async context => {
+    await context.sendText('stock action 6');
+    const { text: inputText } = context.event;
     try {
         const wordResult = wordsSplitter.extractor(inputText);
         const searchText = `${wordResult.remain} ${wordResult.types.join(' ')}`.trim();
         const result = await rp({
             method: 'GET',
-            uri: `${config.api.host}/search/bot?q=${encodeURIComponent(searchText)}`,
-            json: true
+            uri: `${process.env.FUGLE_API_HOST}/search/bot?q=${encodeURIComponent(searchText)}`,
+            json: true,
         });
         if (_.isEmpty(result) || result.message === 'notfind') {
-            await general.dataNotFound(context);
+            await handleDataNotFound(context);
             return;
         }
+        console.log(result);
+        await context.sendMessage('go search');
         if (result.elements) {
             const elLength = result.elements.length;
-            // session.dialogData.elements = result.elements;
             if (elLength === 0) {
-                await general.dataNotFound(context);
-                return;
-            } else if (elLength > 3) {
+                await handleDataNotFound(context);
+            } else if (elLength > 2) {
                 const text = `您的搜尋總共傳回 ${elLength} 份資料, 請問您要全部顯示嗎?`;
-                const quickReplies = [
-                    new QuickReply('text', '我想重新搜尋', 'SEARCH_RESET'),
-                    new QuickReply('text', '好', 'SEARCH_ALL'),
+                const keyboardParams = [
+                    {
+                        text: '我想重新搜尋',
+                        callbackData: `SEARCH_RESET`,
+                    },
+                    {
+                        text: '好',
+                        callbackData: `SEARCH_ALL`,
+                    },
                 ];
-                await context.sendMessage(new Message(text, quickReplies));
+                await context.sendMessage([
+                    text,
+                    {
+                        replyMarkup: {
+                            inlineKeyboard: [keyboardParams],
+                        },
+                    },
+                ]);
             } else {
-                await bluebird.each(result.elements, async (symbolComplex: any) => {
+                await Promise.each(result.elements, async symbolComplex => {
                     const { priceInfo } = symbolComplex;
-                    await context.sendMessage(new Message(priceInfo));
-                    const defaultInfo = await symbolMessage.defaultInfo(symbolComplex);
+                    await context.sendMessage(priceInfo);
+                    const defaultInfo = await stockMsg.defaultInfo(symbolComplex);
                     console.log(defaultInfo);
-                    await context.sendGenericTemplate(defaultInfo);
+                    // await context.sendGenericTemplate(defaultInfo);
                 });
             }
+            return;
         }
+        /*
         if (result.cards) {
             const caLength = result.cards.length;
             // session.dialogData.cards = result.cards;
@@ -69,8 +79,8 @@ export const search = async (context: any, inputText: string) => {
                     session.send(message);
                 });
                 */
-            }
-        }
+        //    }
+        // }
     } catch (err) {
         console.error(err);
     }
@@ -160,23 +170,6 @@ export const search = async (context: any, inputText: string) => {
     */
 };
 
-export const showImportant = async (context: any) => {
-    /*
-    const chunks = args.data.split('-');
-    const symbolId = chunks[0];
-    const fingerprint = chunks[2];
-    const webUrl = `${config.fugleServer}/picture/cards?cards[]={"c":"FCRD000006","s":"${symbolId}","r":"${fingerprint}"}`;
-    const text = '不好意思, 因為改版更新, 請您透過以下連結觀看本則訊息, 謝謝!';
-    const message = new builder.Message(session)
-        .text(text)
-        .attachments([
-            new builder.HeroCard(session)
-                .buttons([
-                    builder.CardAction.openUrl(session, webUrl, '快速閱讀')
-                ]),
-        ]);
-    return session.endDialog(message);
-    return session.endDialog('不好意思, 這則訊息的顯示目前有點問題, 麻煩您先到網站上瀏覽, 謝謝!');
-    */
+module.exports = {
+    handleSearch,
 };
-

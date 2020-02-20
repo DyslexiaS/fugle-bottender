@@ -1,11 +1,11 @@
-export let fullwidth = async (context: any, next: any) => {
+module.exports = async (context, props) => {
     const { isText } = context.event;
-    let { text } = context.event;
     if (isText) {
-        text = text.replace(/[\uff01-\uff5e]/g, (ch: string) => {
+        let { text } = context.event;
+        text = text.replace(/[\uff01-\uff5e]/g, ch => {
             return String.fromCharCode(ch.charCodeAt(0) - 0xfee0);
         });
         text = text.toUpperCase();
     }
-    await next();
+    return props.next;
 };

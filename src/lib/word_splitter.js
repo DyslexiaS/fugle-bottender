@@ -1,13 +1,15 @@
 const _ = require('lodash');
-const tokens = require('./token').searchwords;
+const tokens = require('./token');
 
-let terms = tokens.map((x: any) => {
-    return x.terms.map((d: any) => {
+let terms = tokens.map(x => {
+    return x.terms.map(d => {
         return [d, x.mapTo[0].card_spec_id];
     });
 });
 terms = _.flatten(terms);
-const termsKey = terms.map((x: any) => { return x[0]; });
+const termsKey = terms.map(x => {
+    return x[0];
+});
 const stopWords = [
     '請告訴',
     '請問',
@@ -31,12 +33,12 @@ const stopWords = [
     '呀',
 ];
 
-export const extractor = (testWord: any) => {
-    const hit: any = [];
-    stopWords.forEach((stopWord) => {
+const extractor = testWord => {
+    const hit = [];
+    stopWords.forEach(stopWord => {
         testWord = testWord.replace(stopWord, '');
     });
-    termsKey.forEach((key: any) => {
+    termsKey.forEach(key => {
         if (testWord.indexOf(`的${key}`) >= 0) {
             hit.push(key);
             testWord = testWord.replace(`的${key}`, '');
@@ -48,7 +50,7 @@ export const extractor = (testWord: any) => {
     });
     return {
         remain: testWord,
-        types: hit
+        types: hit,
     };
 };
 
@@ -60,3 +62,7 @@ if (require.main === module) {
     extractor('告訴我台積電地址');
     extractor('台積電的地址');
 }
+
+module.exports = {
+    extractor,
+};
