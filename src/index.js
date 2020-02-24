@@ -11,8 +11,8 @@ const {
     handleNotFound,
 } = require('./handler/general');
 const {
-    handleAddSymbols,
-    handleDelSymbols,
+    handleAddSymbolsReq,
+    handleDelSymbolsReq,
     handleRemoveWatchlist,
     handleShowWatchlist,
     handleLinkingStatus,
@@ -44,8 +44,8 @@ const mainRoutes = () => {
             /(^XD.*$|^OK.*$|^[:|：][)|）]$|^\^[\s|_]*\^$|^哈+$|^好喔.+$|^好的.+$|^haha$)/i,
             handleSmile,
         ),
-        text(/(^ADD\s*(.+)$|^[+＋]\s*(.+)$)/i, handleAddSymbols),
-        text(/(^DEL\s*(.+)$|^[-－]\s*(.+)$)/i, handleDelSymbols),
+        text(/(^ADD\s*(.+)$|^[+＋]\s*(.+)$)/i, handleAddSymbolsReq),
+        text(/(^DEL\s*(.+)$|^[-－]\s*(.+)$)/i, handleDelSymbolsReq),
         text(/^CLEAR$/i, handleRemoveWatchlist),
         text(
             /(新增自選|加入自選|加到自選|新增追蹤|加入追蹤|加到追蹤|刪除自選|自選刪除|刪除追蹤|追蹤刪除)/i,

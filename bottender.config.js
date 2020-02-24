@@ -3,7 +3,7 @@ module.exports = {
         driver: 'memory',
         stores: {
             memory: {
-                maxSize: 500,
+                maxSize: 50000,
             },
             file: {
                 dirname: '.sessions',

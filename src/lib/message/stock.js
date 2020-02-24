@@ -135,7 +135,7 @@ const imageInfo = (searchText, cards) => {
         };
     });
     resultMsgs.push([
-        `►　您可以...`,
+        `► 您可以...`,
         {
             replyMarkup: {
                 inlineKeyboard: [actionKeyboardParams1, actionKeyboardParams2],
