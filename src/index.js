@@ -6,7 +6,9 @@ const {
     handleSmile,
     handleHelp,
     handleSuggest,
+    handleGetStarted,
     handleUnknown,
+    handleNotFound,
 } = require('./handler/general');
 const {
     handleAddSymbols,
@@ -21,9 +23,21 @@ const validateAndLog = require('./middleware/validate_logger');
 const fullwidth = require('./middleware/fullwidth');
 const typingAction = require('./middleware/typing_action');
 
+const handleBotCommands = async (context, props) => {
+    const {
+        message: { text },
+    } = context.event;
+    if (text.match(/^\/start/)) {
+        return handleGetStarted(context);
+    } else {
+        return handleNotFound(context);
+    }
+};
+
 const mainRoutes = () => {
     return router([
         telegram.callbackQuery(handleTelegramCallbackQuery),
+        text(/^\//, handleBotCommands),
         text(/(^hi.*|^hello.*|[你|妳|您]好.*|^哈囉)/i, handleGreeting),
         text(/(^好棒.*$|^你好棒.*$|^thank.*$|^謝謝.*$|^感謝.*$|^沒關係.*$)/i, handleThanks),
         text(
@@ -54,7 +68,6 @@ module.exports = async function App() {
         validateAndLog,
         typingAction,
         fullwidth,
-        // updateAddress,
         // handle routes
         mainRoutes,
     ]);

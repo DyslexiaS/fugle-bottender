@@ -23,13 +23,13 @@ module.exports = async (context, props) => {
     let timestamp = null;
     if (isMessage) {
         const {
-            from,
+            from: { id: fromId },
             chat: { id: chatId, type: chatType },
             date,
         } = message;
-        userId = `telegram-${chatId}`;
+        userId = `telegram-${fromId}`;
         timestamp = new Date(date * 1000);
-        if (chatType !== 'private' || from.id !== chatId) {
+        if (chatType !== 'private' || fromId !== chatId) {
             await context.sendMessage(
                 '不好意思，目前小幫手暫時不支援群組功能，如果您有其他需求, 歡迎輸入【#】告訴我!',
             );

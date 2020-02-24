@@ -1,3 +1,4 @@
+const rp = require('request-promise');
 const utilMsg = require('../lib/message/util');
 
 const handleGreeting = async context => {
@@ -33,7 +34,20 @@ const handleHelp = async (context, props) => {
 };
 
 const handleSuggest = async context => {
-    await context.sendMessage('suggest handler');
+    const text = '歡迎您透過客服系統提供我們任何想法與建議，我們會儘速回覆您，謝謝!';
+    // TBD:
+    // const supportId = Buffer.from(`${userId},${userName}`).toString('base64').replace(/=/g, '**');
+    const keyboardParams = [
+        {
+            text: '客服系統',
+            url: `https://support.fugle.tw/online-service/`,
+        },
+    ];
+    await context.sendMessage(text, {
+        replyMarkup: {
+            inlineKeyboard: [keyboardParams],
+        },
+    });
 };
 
 const handleDataNotFound = async context => {
@@ -42,8 +56,43 @@ const handleDataNotFound = async context => {
     await context.sendMessage(message);
 };
 
+const handleNotFound = async context => {
+    const message = utilMsg.notFound();
+    await context.sendMessage(...message);
+};
+
 const handleUnknown = async context => {
-    await context.sendMessage('unknown handler');
+    await context.sendMessage('不好意思，小幫手目前暫時不支援此功能喔!');
+};
+
+const handleGetStarted = async context => {
+    const { message } = context.event;
+    const {
+        from: { id: userId, first_name, last_name },
+    } = message;
+    if (!userId) {
+        return handleUnknown(context);
+    }
+    try {
+        await rp({
+            uri: `${process.env.FUGLE_API_HOST}/bot/init_user`,
+            method: 'POST',
+            body: {
+                channel: 'telegram',
+                userId: `telegram-${userId}`,
+                profile: {
+                    first_name,
+                    last_name,
+                },
+            },
+            json: true,
+            encoding: null,
+            timeout: 10000,
+        });
+        return handleGreeting(context);
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 module.exports = {
@@ -53,5 +102,7 @@ module.exports = {
     handleHelp,
     handleSuggest,
     handleDataNotFound,
+    handleNotFound,
     handleUnknown,
+    handleGetStarted,
 };

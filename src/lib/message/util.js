@@ -38,20 +38,23 @@ const thanks = () => {
 };
 
 const notFound = () => {
-    const text = `您的這個問題我目前找不到答案, 我會盡快學習相關的知識! \n
+    const text = `您的指令或問題我目前找不到答案, 我會盡快學習相關的知識! \n
         您可以點擊【查看說明】來看看我目前提供的服務,
         或是輸入【#】反應您遇到的問題喔!`;
-    const buttons = [
+    const keyboardParams = [
         {
-            type: 'postback',
-            title: '查看說明',
-            payload: 'HELP',
+            text: '查看說明',
+            callbackData: 'HELP',
         },
     ];
-    return {
-        title: text,
-        buttons,
-    };
+    return [
+        text,
+        {
+            replyMarkup: {
+                inlineKeyboard: [keyboardParams],
+            },
+        },
+    ];
 };
 
 const dataNotFound = () => {

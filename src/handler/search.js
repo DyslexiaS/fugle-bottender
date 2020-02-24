@@ -35,14 +35,11 @@ const handleSearch = async context => {
                         callbackData: `SEARCH_ALL`,
                     },
                 ];
-                await context.sendMessage([
-                    text,
-                    {
-                        replyMarkup: {
-                            inlineKeyboard: [keyboardParams],
-                        },
+                await context.sendMessage(text, {
+                    replyMarkup: {
+                        inlineKeyboard: [keyboardParams],
                     },
-                ]);
+                });
             } else {
                 await Promise.each(result.elements, async symbolComplex => {
                     const { priceInfo } = symbolComplex;
@@ -74,14 +71,11 @@ const handleSearch = async context => {
                         callbackData: `SEARCH_ALL`,
                     },
                 ];
-                await context.sendMessage([
-                    text,
-                    {
-                        replyMarkup: {
-                            inlineKeyboard: [keyboardParams],
-                        },
+                await context.sendMessage(text, {
+                    replyMarkup: {
+                        inlineKeyboard: [keyboardParams],
                     },
-                ]);
+                });
             } else {
                 const imageInfo = await stockMsg.imageInfo(searchText, result.cards);
                 await context.sendPhoto(...imageInfo[0]);
