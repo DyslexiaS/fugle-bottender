@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const { bottender } = require('bottender');
+const notify = require('./src/controller/notify');
 
 const app = bottender({
     dev: process.env.NODE_ENV !== 'production',
@@ -22,12 +23,8 @@ app.prepare().then(() => {
         }),
     );
 
-    // your custom route
-    server.get('/api', (req, res) => {
-        res.json({
-            ok: true,
-        });
-    });
+    // proactive notification
+    server.post('/notify_users', notify);
 
     // route for webhook request
     server.all('*', (req, res) => {

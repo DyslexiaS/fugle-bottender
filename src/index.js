@@ -9,6 +9,7 @@ const {
     handleGetStarted,
     handleUnknown,
     handleNotFound,
+    handleRegisterHint,
 } = require('./handler/general');
 const {
     handleAddSymbolsReq,
@@ -17,6 +18,7 @@ const {
     handleShowWatchlist,
     handleLinkingStatus,
 } = require('./handler/watchlist');
+const { handleRegisterReq, handleRegister } = require('./handler/user');
 const { handleSearch } = require('./handler/search');
 const { handleTelegramCallbackQuery } = require('./handler/telegram');
 const validateAndLog = require('./middleware/validate_logger');
@@ -28,7 +30,7 @@ const handleBotCommands = async (context, props) => {
         message: { text },
     } = context.event;
     if (text.match(/^\/start/)) {
-        return handleGetStarted(context);
+        return handleRegisterHint(context);
     } else {
         return handleNotFound(context);
     }
@@ -38,6 +40,8 @@ const mainRoutes = () => {
     return router([
         telegram.callbackQuery(handleTelegramCallbackQuery),
         text(/^\//, handleBotCommands),
+        text(/^[0-9]{10}$/, handleRegisterReq),
+        text(/^[0-9]{6}$/, handleRegister),
         text(/(^hi.*|^hello.*|[你|妳|您]好.*|^哈囉)/i, handleGreeting),
         text(/(^好棒.*$|^你好棒.*$|^thank.*$|^謝謝.*$|^感謝.*$|^沒關係.*$)/i, handleThanks),
         text(

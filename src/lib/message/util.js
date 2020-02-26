@@ -5,6 +5,11 @@ const smile = () => {
     return XDstring[Math.round(Math.random() * XDstring.length)];
 };
 
+const register = () => {
+    const text = `Hi, 您好, 我是富果股市小幫手! 目前此服務僅免費開放給富果會員使用. 若您已註冊富果會員, 請直接輸入您的<u>【手機號碼】</u>(格式：0912345678)進行帳號認證, 若您尚未註冊富果會員, 請先<a href="https://www.fugle.tw/account/register">完成註冊後</a>再使用本服務, 謝謝！`;
+    return text;
+};
+
 const greeting = () => {
     const tip = '您現在就可以輸入任一檔股票試試看, 例如:【2330】';
     const text = `Hi, 您好, 我是富果股市小幫手! 您可以告訴我您關心的股票, 我會在營收、財報和重大訊息發佈的時候通知您喔! \n\n${tip}`;
@@ -129,6 +134,7 @@ const helpQuery = () => {
 
 module.exports = {
     smile,
+    register,
     greeting,
     thanks,
     notFound,

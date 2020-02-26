@@ -65,6 +65,13 @@ const handleUnknown = async context => {
     await context.sendMessage('不好意思，小幫手目前暫時不支援此功能喔!');
 };
 
+const handleRegisterHint = async context => {
+    const message = utilMsg.register();
+    await context.sendMessage(message, {
+        parse_mode: 'HTML',
+    });
+};
+
 const handleGetStarted = async context => {
     const { message } = context.event;
     const {
@@ -104,5 +111,6 @@ module.exports = {
     handleDataNotFound,
     handleNotFound,
     handleUnknown,
+    handleRegisterHint,
     handleGetStarted,
 };

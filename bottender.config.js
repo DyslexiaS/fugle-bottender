@@ -20,7 +20,10 @@ module.exports = {
             },
         },
     },
-    initialState: {},
+    initialState: {
+        user: {},
+        watchlist: {},
+    },
     channels: {
         messenger: {
             enabled: false,
