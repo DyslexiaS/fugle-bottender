@@ -14,35 +14,46 @@ function revenue(symbolId, symbolName, contentSpecId, content, botSource) {
         `${numeral(rawContent.data.current.revenue).format('0,0')}仟元 \n` +
         `【YoY: ${rawContent.data.current.yoy}%】\n【MoM: ${mom}】`;
     const imageUrl = `${imageBaseUrl}/revenue/${symbolId}.${botSource}.jpg?ts=${ts}`;
-    const cardParams = encodeURIComponent(`{"c":"FCRD000008","s":"${symbolId}"}`);
-    const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]=${cardParams}`;
-    const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}`;
+    const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]={"c":"FCRD000008","s":"${symbolId}"}`;
+    // messenger shows warning when url includes chars like ' ' or '+' or '='
+    const redirectParams = encodeURIComponent(`symbol_id**${symbolId}`);
+    const webUrl2 = `${
+        process.env.FUGLE_WEB_HOST
+    }/bot-redirect.html?path=trade&params=${redirectParams}&t=${new Date().getTime()}`;
     const webUrl3 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},revenue,kchart?utm_source=fortunabot&utm_medium=messengerbot&utm_campaign=fugle`;
-    const keyboardParams = [
+    const buttons = [
         {
-            text: `輕量模式`,
+            type: 'web_url',
             url: webUrl1,
+            title: '快速閱讀',
+            webview_height_ratio: 'tall',
         },
         {
-            text: '富果帳戶下單',
+            type: 'web_url',
             url: webUrl2,
+            title: '玉山證券下單/開戶',
+            messenger_extensions: true,
         },
         {
-            text: '富果完整版',
+            type: 'web_url',
             url: webUrl3,
+            title: 'Fugle完整版',
         },
     ];
-    return [
-        [
-            imageUrl,
-            {
-                caption: `${title}\n${subtitle}`,
-                replyMarkup: {
-                    inlineKeyboard: [keyboardParams],
-                },
+    const elements = [
+        {
+            title: title,
+            image_url: imageUrl,
+            default_action: {
+                type: 'web_url',
+                url: webUrl1,
+                webview_height_ratio: 'tall',
             },
-        ],
+            subtitle: subtitle,
+            buttons: buttons,
+        },
     ];
+    return [elements];
 }
 
 function important(symbolId, symbolName, contentSpecId, content) {
@@ -62,48 +73,56 @@ function important(symbolId, symbolName, contentSpecId, content) {
     if (!rawContentIdxs.length) {
         rawContentIdxs.push(0); // should at least send 1st element
     }
+
     return Promise.map(rawContentIdxs, rawContentIdx => {
         const title = `${symbolName}(${symbolId}) 發布了重大訊息!`;
         const data = content.rawContent[rawContentIdx];
-        /*
         const desc = data.descs
             .map(el => {
                 const temp = el.content.join('');
                 return `${el.title} ${temp}`;
             })
-            .slice(0, 3)
-            .join('\n');
-        */
-        const subtitle = `${data.title}...`;
+            .join('');
+        const subtitle = `${data.title}\n\n${desc}`;
         const rowId = data._id;
-        const cardParams = encodeURIComponent(
-            `{"c":"FCRD000006","s":"${symbolId}","r":"${rowId}"}`,
-        );
-        const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]=${cardParams}`;
-        const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}`;
+        const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]={"c":"FCRD000006","s":"${symbolId}","r":"${rowId}"}`;
+        const redirectParams = encodeURIComponent(`symbol_id**${symbolId}`);
+        const webUrl2 = `${
+            process.env.FUGLE_WEB_HOST
+        }/bot-redirect.html?path=trade&params=${redirectParams}&t=${new Date().getTime()}`;
         const webUrl3 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},important,kchart?utm_source=fortunabot&utm_medium=messengerbot&utm_campaign=fugle`;
-        const keyboardParams = [
+        const buttons = [
             {
-                text: `輕量模式`,
+                type: 'web_url',
                 url: webUrl1,
+                title: '快速閱讀',
+                webview_height_ratio: 'tall',
             },
             {
-                text: '富果帳戶下單',
+                type: 'web_url',
                 url: webUrl2,
+                title: '玉山證券下單/開戶',
+                messenger_extensions: true,
             },
             {
-                text: '富果完整版',
+                type: 'web_url',
                 url: webUrl3,
+                title: 'Fugle完整版',
             },
         ];
-        return [
-            `${title}\n${subtitle}`,
+        const elements = [
             {
-                replyMarkup: {
-                    inlineKeyboard: [keyboardParams],
+                title: title,
+                default_action: {
+                    type: 'web_url',
+                    url: webUrl1,
+                    webview_height_ratio: 'tall',
                 },
+                subtitle: subtitle,
+                buttons: buttons,
             },
         ];
+        return elements;
     });
 }
 
@@ -133,11 +152,12 @@ function statement(symbolId, symbolName, contentSpecId, content) {
     const rawContent = content.rawContent;
     const ys = `${rawContent.year}第${rawContent.season}季`;
     const message = `${symbolName}(${symbolId}) 公布了${ys}財報!`;
-    const keyboardParams = rawContent.urls
+    const buttons = rawContent.urls
         .map(obj => {
             return {
+                type: 'web_url',
                 url: obj.url,
-                text: typeMappings[obj.type].name,
+                title: typeMappings[obj.type].name,
                 index: typeMappings[obj.type].idx,
             };
         })
@@ -148,20 +168,26 @@ function statement(symbolId, symbolName, contentSpecId, content) {
             delete obj.index;
             return obj;
         });
-    keyboardParams.push({
-        text: symbolName,
-        callbackData: `SEARCH_SYMBOL::${symbolId}`,
+    buttons.push({
+        type: 'postback',
+        payload: `action?SEARCH_SYMBOL=${symbolId}`,
+        title: symbolName,
     });
-    return [
-        [
-            message,
-            {
-                replyMarkup: {
-                    inlineKeyboard: [keyboardParams.slice(0, 3), keyboardParams.slice(3)],
-                },
-            },
-        ],
+
+    // organize elements
+    const elements = [
+        {
+            title: message,
+            buttons: buttons.slice(0, 3),
+        },
     ];
+    if (buttons.length > 3) {
+        elements.push({
+            title: '►　　',
+            buttons: buttons.slice(3),
+        });
+    }
+    return [elements];
 }
 
 module.exports = {
