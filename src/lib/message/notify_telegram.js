@@ -16,8 +16,7 @@ function revenue(symbolId, symbolName, contentSpecId, content, botSource) {
     const imageUrl = `${imageBaseUrl}/revenue/${symbolId}.${botSource}.jpg?ts=${ts}`;
     const cardParams = encodeURIComponent(`{"c":"FCRD000008","s":"${symbolId}"}`);
     const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]=${cardParams}`;
-    // messenger shows warning when url includes chars like ' ' or '+' or '='
-    const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}}`;
+    const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}`;
     const webUrl3 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},revenue,kchart?utm_source=fortunabot&utm_medium=messengerbot&utm_campaign=fugle`;
     const keyboardParams = [
         {
@@ -33,6 +32,7 @@ function revenue(symbolId, symbolName, contentSpecId, content, botSource) {
             url: webUrl3,
         },
     ];
+    console.log(imageUrl);
     return [
         imageUrl,
         {

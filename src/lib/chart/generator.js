@@ -29,7 +29,7 @@ async function genChart(html, symbolId, fileHash, chartOptions) {
             });
         await page.open(`${dirName}/index.temp.${symbolId}.${botSource}.html`);
         await page.property('content');
-        await page.render(`${symbolId}-${fileHash}.${chartType}.${botSource}.jpg`, {
+        await page.render(`/tmp/${symbolId}-${fileHash}.${chartType}.${botSource}.jpg`, {
             format: 'jpeg',
             quality: '100',
         });
@@ -43,7 +43,7 @@ async function genChart(html, symbolId, fileHash, chartOptions) {
 
 function uploadPromise(symbolId, fileHash, chartOptions) {
     const { botSource, chartType } = chartOptions;
-    const buffer = fs.readFileSync(`${symbolId}-${fileHash}.${chartType}.${botSource}.jpg`);
+    const buffer = fs.readFileSync(`/tmp/${symbolId}-${fileHash}.${chartType}.${botSource}.jpg`);
     const bucketName = process.env.S3_BUCKET;
     const objectParams = {
         Bucket: bucketName,
@@ -75,7 +75,7 @@ async function genChartAndUploadToS3(jsonString, symbolId, chartOptions) {
         chartHeight: chartHeight || 314,
     });
     const fileHash = md5(jsonString);
-    const filename = `${symbolId}-${fileHash}.${chartType}.${botSource}.jpg`;
+    const filename = `/tmp/${symbolId}-${fileHash}.${chartType}.${botSource}.jpg`;
     try {
         fs.statSync(filename);
         console.log(`${filename} file exists.`);
@@ -87,7 +87,7 @@ async function genChartAndUploadToS3(jsonString, symbolId, chartOptions) {
     const indexhtml = fs
         .readFileSync(`${dirName}/index.html`)
         .toString()
-        .replace('{rawdata}', jsonString);
+        .replace('// var rawdata', `var rawdata = ${jsonString}`);
     try {
         fs.writeFileSync(`${dirName}/index.temp.${symbolId}.${botSource}.html`, indexhtml, 'utf-8');
         await genChart(indexhtml, symbolId, fileHash, chartOptions);
@@ -103,7 +103,7 @@ if (require.main === module) {
     const symbolId = '2330';
     rp(`https://www.fugle.tw/api/v1/data/new_content/FCNT000006?symbol_id=${symbolId}`)
         .then(jsonContent => {
-            genChartAndUploadToS3(jsonContent, symbolId, {
+            return genChartAndUploadToS3(jsonContent, symbolId, {
                 botSource: 'facebook',
                 chartType: 'revenue',
             });
@@ -114,7 +114,7 @@ if (require.main === module) {
             );
         })
         .then(jsonContent => {
-            genChartAndUploadToS3(jsonContent, symbolId, {
+            return genChartAndUploadToS3(jsonContent, symbolId, {
                 botSource: 'line',
                 chartType: 'revenue',
             });
