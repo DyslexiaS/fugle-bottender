@@ -51,7 +51,7 @@ const handleRegister = async context => {
     const {
         from: { id: userId, first_name, last_name },
     } = message;
-    if (!userId || !context.user.mobile) {
+    if (!userId || !context.state.user.mobile) {
         return context.sendMessage('處理錯誤, 請稍候重試');
     }
     try {
@@ -59,7 +59,7 @@ const handleRegister = async context => {
             uri: `${process.env.FUGLE_API_HOST}/bot/register`,
             method: 'POST',
             body: {
-                mobile: context.user.mobile,
+                mobile: context.state.user.mobile,
                 otp,
                 channel: 'telegram',
                 userId: `telegram-${userId}`,

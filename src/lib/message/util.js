@@ -6,7 +6,10 @@ const smile = () => {
 };
 
 const register = () => {
-    const text = `Hi, 您好, 我是富果股市小幫手! 目前此服務僅免費開放給富果會員使用. 若您已註冊富果會員, 請直接輸入您的<u>【手機號碼】</u>(格式：0912345678)進行帳號認證, 若您尚未註冊富果會員, 請先<a href="https://www.fugle.tw/account/register">完成註冊後</a>再使用本服務, 謝謝！`;
+    const text =
+        `Hi, 您好, 我是富果股市小幫手! 目前此服務僅免費開放給富果會員使用. ` +
+        `若您已註冊富果會員, 請直接輸入您的<u>【手機號碼】</u> (格式：0912345678) 進行帳號認證, ` +
+        `若您尚未註冊富果會員, 請先<a href="https://www.fugle.tw/account/register">完成註冊後</a>再使用本服務, 謝謝！`;
     return text;
 };
 
