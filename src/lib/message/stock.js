@@ -131,7 +131,7 @@ const imageInfo = (searchText, cards) => {
     ];
     const actionKeyboardParams2 = getMappingCardNames(cardSpecIds, 2).map(name => {
         return {
-            text: `查詢 ${name}`,
+            text: `${name}`,
             callbackData: `SEARCH_SYMBOL::${symbolIdsJoined},${name}`,
         };
     });

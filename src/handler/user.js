@@ -32,12 +32,12 @@ const handleRegisterReq = async context => {
         let text;
         if (status === 0) {
             // new user
-            text = `您好, 已傳送 OTP 驗證碼到您的手機【${mobile}】, 請回傳驗證碼完成帳號綁定.`;
+            text = `您好, 已傳送簡訊驗證碼到您的手機【${mobile}】, 請在對話框回傳您收到的【6位數字驗證碼】完成帳號綁定.`;
         } else if (status === 1) {
             // messenger user
             text =
-                `您好, 此手機目前有綁定即將下架的 Messenger 服務, 即將為您進行帳號移轉作業` +
-                `, 已傳送 OTP 驗證碼到您的手機【${mobile}】, 請回傳驗證碼完成帳號綁定, 系統會自動將您在 Messenger 的清單資料移轉至 Telegram.`;
+                `您好, 此手機目前有綁定即將下架的 Messenger 服務, 即將為您進行帳號移轉作業.\n\n` +
+                `系統將傳送簡訊驗證碼到您的手機【${mobile}】, 請在對話框回傳您收到的【6位數字驗證碼】完成帳號綁定, 系統會自動將您在 Messenger 的清單資料移轉至 Telegram.`;
         }
         await context.sendMessage(text);
     } catch (err) {

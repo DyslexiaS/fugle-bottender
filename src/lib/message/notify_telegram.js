@@ -14,22 +14,17 @@ function revenue(symbolId, symbolName, contentSpecId, content, botSource) {
         `${numeral(rawContent.data.current.revenue).format('0,0')}仟元 \n` +
         `【YoY: ${rawContent.data.current.yoy}%】\n【MoM: ${mom}】`;
     const imageUrl = `${imageBaseUrl}/revenue/${symbolId}.${botSource}.jpg?ts=${ts}`;
-    const cardParams = encodeURIComponent(`{"c":"FCRD000008","s":"${symbolId}"}`);
-    const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]=${cardParams}`;
+    // const cardParams = encodeURIComponent(`{"c":"FCRD000008","s":"${symbolId}"}`);
+    const webUrl1 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},revenue,kchart?utm_source=fortunabot&utm_medium=messengerbot&utm_campaign=fugle`;
     const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}`;
-    const webUrl3 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},revenue,kchart?utm_source=fortunabot&utm_medium=messengerbot&utm_campaign=fugle`;
     const keyboardParams = [
         {
-            text: `輕量模式`,
+            text: '快速閱讀',
             url: webUrl1,
         },
         {
             text: '富果帳戶下單',
             url: webUrl2,
-        },
-        {
-            text: '富果完整版',
-            url: webUrl3,
         },
     ];
     return [
@@ -65,7 +60,6 @@ function important(symbolId, symbolName, contentSpecId, content) {
     return Promise.map(rawContentIdxs, rawContentIdx => {
         const title = `${symbolName}(${symbolId}) 發布了重大訊息!`;
         const data = content.rawContent[rawContentIdx];
-        /*
         const desc = data.descs
             .map(el => {
                 const temp = el.content.join('');
@@ -73,32 +67,29 @@ function important(symbolId, symbolName, contentSpecId, content) {
             })
             .slice(0, 3)
             .join('\n');
-        */
-        const subtitle = `${data.title}...`;
+        const subtitle = `<b>${data.title}</b>\n\n${desc}...`;
+        /*
         const rowId = data._id;
         const cardParams = encodeURIComponent(
             `{"c":"FCRD000006","s":"${symbolId}","r":"${rowId}"}`,
         );
-        const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]=${cardParams}`;
+        */
+        const webUrl1 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},important,kchart?utm_source=fortunabot&utm_medium=messengerbot&utm_campaign=fugle`;
         const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}`;
-        const webUrl3 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},important,kchart?utm_source=fortunabot&utm_medium=messengerbot&utm_campaign=fugle`;
         const keyboardParams = [
             {
-                text: `輕量模式`,
+                text: '快速閱讀',
                 url: webUrl1,
             },
             {
                 text: '富果帳戶下單',
                 url: webUrl2,
             },
-            {
-                text: '富果完整版',
-                url: webUrl3,
-            },
         ];
         return [
-            `${title}\n${subtitle}`,
+            `${title}\n\n${subtitle}`,
             {
+                parseMode: 'HTML',
                 replyMarkup: {
                     inlineKeyboard: [keyboardParams],
                 },
