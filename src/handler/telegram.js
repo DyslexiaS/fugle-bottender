@@ -2,6 +2,7 @@
 const { withProps } = require('bottender');
 const { handleHelp } = require('./general');
 const {
+    handleAddSymbolsReq,
     handleAddSymbols,
     handleDelSymbols,
     handleShowWatchlist,
@@ -9,17 +10,22 @@ const {
     handleWatchlistSettings,
 } = require('./watchlist');
 const { handleUnregister } = require('./user');
+const { handleSearch } = require('./search');
 
 const handleTelegramCallbackQuery = async (context, props) => {
     const { data: queryData } = context.event.callbackQuery;
     if (queryData.match(/^HELP/i)) {
         const data = queryData.match(/^HELP_(.+)$/i);
-        return withProps(handleHelp, { data: data && data.length ? data[1] : null });
+        return withProps(handleHelp, {
+            data: data && data.length ? data[1] : null,
+        });
     }
     let match;
     match = queryData.match(/^SHOW_WATCHLIST_DETAIL::(.+)$/i);
     if (match) {
-        return withProps(handleShowWatchlistDetail, { listId: match[1] });
+        return withProps(handleShowWatchlistDetail, {
+            listId: match[1],
+        });
     }
     match = queryData.match(/^SHOW_WATCHLIST$/i);
     if (match) {
@@ -36,13 +42,29 @@ const handleTelegramCallbackQuery = async (context, props) => {
     if (match) {
         return handleUnregister;
     }
+    match = queryData.match(/^ADD_TO_WATCHLIST_REQ::(.+)$/i);
+    if (match) {
+        return withProps(handleAddSymbolsReq, {
+            symbolId: match[1],
+        });
+    }
     match = queryData.match(/^ADD_TO_WATCHLIST::(.+)$/i);
     if (match) {
-        return withProps(handleAddSymbols, { listId: match[1] });
+        return withProps(handleAddSymbols, {
+            listId: match[1],
+        });
     }
     match = queryData.match(/^DEL_FROM_WATCHLIST::(.+)$/i);
     if (match) {
-        return withProps(handleDelSymbols, { listIds: [match[1]] });
+        return withProps(handleDelSymbols, {
+            listIds: [match[1]],
+        });
+    }
+    match = queryData.match(/^SEARCH_SYMBOL::(.+)$/i);
+    if (match) {
+        return withProps(handleSearch, {
+            query: match[1],
+        });
     }
 };
 

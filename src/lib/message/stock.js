@@ -34,7 +34,7 @@ const defaultInfo = async complex => {
     const c1KeyboardParams = [
         {
             text: `加入自選`,
-            callbackData: `ADD_TO_WATCHLIST`,
+            callbackData: `ADD_TO_WATCHLIST_REQ::${symbolId}`,
         },
         {
             text: '交易',
@@ -60,15 +60,15 @@ const defaultInfo = async complex => {
         const c2KeyboardParams = [
             {
                 text: '營收',
-                callbackData: `SEARCH_SYMBOL`,
+                callbackData: `SEARCH_SYMBOL::${symbolId},營收`,
             },
             {
                 text: '融資券',
-                callbackData: `SEARCH_SYMBOL`,
+                callbackData: `SEARCH_SYMBOL::${symbolId},融資券`,
             },
             {
                 text: '法人買賣',
-                callbackData: `SEARCH_SYMBOL`,
+                callbackData: `SEARCH_SYMBOL::${symbolId},法人買賣`,
             },
         ];
         const card2 = [
@@ -116,12 +116,13 @@ const imageInfo = (searchText, cards) => {
             },
         ]);
     });
+    const symbolIdsJoined = symbolIds.join(',');
     // suffix info
     const urlQuery = encodeURIComponent(searchText);
     const actionKeyboardParams1 = [
         {
             text: `加入自選`,
-            callbackData: 'ADD_TO_WATCHLIST',
+            callbackData: `ADD_TO_WATCHLIST_REQ::${symbolIdsJoined}`,
         },
         {
             text: `到富果看更多`,
@@ -131,7 +132,7 @@ const imageInfo = (searchText, cards) => {
     const actionKeyboardParams2 = getMappingCardNames(cardSpecIds, 2).map(name => {
         return {
             text: `查詢 ${name}`,
-            callbackData: 'SEARCH_SYMBOL',
+            callbackData: `SEARCH_SYMBOL::${symbolIdsJoined},${name}`,
         };
     });
     resultMsgs.push([

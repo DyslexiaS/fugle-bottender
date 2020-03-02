@@ -5,8 +5,14 @@ const wordsSplitter = require('../lib/word_splitter');
 const { handleDataNotFound } = require('./general');
 const stockMsg = require('../lib/message/stock');
 
-const handleSearch = async context => {
-    const { text: inputText } = context.event;
+const handleSearch = async (context, props) => {
+    let inputText;
+    const { isText, isCallbackQuery } = context.event;
+    if (isText) {
+        inputText = context.event.text;
+    } else if (isCallbackQuery) {
+        inputText = props.query;
+    }
     try {
         const wordResult = wordsSplitter.extractor(inputText);
         const searchText = `${wordResult.remain} ${wordResult.types.join(' ')}`.trim();

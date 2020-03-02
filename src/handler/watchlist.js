@@ -11,7 +11,7 @@ const handleAddSymbolsReq = async (context, props) => {
     if (isText && props.match) {
         symbolQuery = props.match[2] || props.match[3];
     } else if (isCallbackQuery) {
-        //
+        symbolQuery = props.symbolId;
     }
     if (!symbolQuery) {
         return context.sendMessage('無法確認您要新增的股票, 您可以重新輸入看看, 例如: 【+2330】');
