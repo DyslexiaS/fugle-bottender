@@ -3,6 +3,7 @@ const { withProps } = require('bottender');
 const { handleHelp } = require('./general');
 const {
     handleAddSymbols,
+    handleDelSymbols,
     handleShowWatchlist,
     handleShowWatchlistDetail,
     handleWatchlistSettings,
@@ -38,6 +39,10 @@ const handleTelegramCallbackQuery = async (context, props) => {
     match = queryData.match(/^ADD_TO_WATCHLIST::(.+)$/i);
     if (match) {
         return withProps(handleAddSymbols, { listId: match[1] });
+    }
+    match = queryData.match(/^DEL_FROM_WATCHLIST::(.+)$/i);
+    if (match) {
+        return withProps(handleDelSymbols, { listIds: [match[1]] });
     }
 };
 

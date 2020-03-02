@@ -1,5 +1,6 @@
 const rp = require('request-promise');
 const Promise = require('bluebird');
+const _ = require('lodash');
 const { withProps } = require('bottender');
 const utils = require('../lib/utils');
 const { NEWLINE_LF } = require('../lib/constants');
@@ -70,7 +71,7 @@ const handleAddSymbolsReq = async (context, props) => {
     });
     await context.sendMessage(text, {
         replyMarkup: {
-            inlineKeyboard: [keyboardParams],
+            inlineKeyboard: _.chunk(keyboardParams, 4),
         },
     });
 };
@@ -101,13 +102,15 @@ const handleAddSymbols = async (context, props) => {
         });
         if (result.error === 'quota exceeded') {
             return context.sendMessage(
-                '您儲存的股票數目已超過單一群組上限(35), 建議您可以與Fugle【同步】後新增更多群組, 若您有其他特殊需求請輸入【#】與我們聯繫, 謝謝!',
+                '您儲存的股票數目已超過單一群組上限(35), 若您有其他特殊需求請輸入【#】與我們聯繫, 謝謝!',
             );
         }
         const symbols = result.symbols;
+        /*
         const symbolIds = symbols.map(symbol => {
             return symbol.id;
         });
+        */
         const list = result.list;
         const symbolStrings = symbols.map(symbol => {
             return `${symbol.name}(${symbol.id})`;
@@ -115,10 +118,12 @@ const handleAddSymbols = async (context, props) => {
         if (symbols.length) {
             const text = `已幫您把 ${symbolStrings.join(',')} 加入 [${list.title}] 了`;
             const keyboardParams = [
+                /*
                 {
                     text: '復原',
                     callbackData: 'DEL_FROM_WATCHLIST',
                 },
+                */
                 {
                     text: '查看自選追蹤',
                     callbackData: 'SHOW_WATCHLIST',
@@ -137,12 +142,150 @@ const handleAddSymbols = async (context, props) => {
     }
 };
 
-const handleDelSymbolsReq = async context => {
-    await context.sendText('stock action 2');
+const handleDelSymbolsReq = async (context, props) => {
+    const { isText, isCallbackQuery } = context.event;
+    let symbolQuery;
+    if (isText && props.match) {
+        symbolQuery = props.match[2] || props.match[3];
+    } else if (isCallbackQuery) {
+        //
+    }
+    if (!symbolQuery) {
+        return context.sendMessage('無法確認您要刪除的股票, 您可以重新輸入看看, 例如: 【-2330】');
+    }
+    const { userId } = utils.getSourceAndUserId(context);
+    const result = await rp({
+        uri: `${process.env.FUGLE_API_HOST}/bot/del_symbols_request`,
+        method: 'POST',
+        body: {
+            userId,
+            symbolQuery,
+        },
+        json: true,
+        encoding: null,
+        timeout: 20000,
+    });
+    if (result.error) {
+        const text = result.error.message;
+        return context.sendMessage(text);
+    }
+    const { symbols, lists } = result;
+    const symbolIds = symbols.map(symbol => symbol.id);
+    const symbolStrings = symbols.map(symbol => `${symbol.name}(${symbol.id})`);
+    if (!symbols.length) {
+        const message = '您所輸入的股票代碼或名稱不存在, 請重新確認喔';
+        return context.sendMessage(message);
+    }
+    if (!lists.length) {
+        const message = '您的群組內沒有這檔股票, 請重新確認喔';
+        return context.sendMessage(message);
+    }
+    // save to state
+    context.setState({
+        watchlist: {
+            lists,
+            symbolIds,
+        },
+    });
+    if (lists.length === 1) {
+        const listId = lists[0].id;
+        return withProps(handleDelSymbols, {
+            listIds: [listId],
+            symbolIds,
+        });
+    }
+    if (symbols.length === 1) {
+        const text = `請問您想將 ${symbolStrings.join(',')} 從哪個追蹤群組中移除呢?`;
+        const keyboardParams = lists.slice(0, 10).map(list => {
+            return {
+                text: list.title,
+                callbackData: `DEL_FROM_WATCHLIST::${list.id}`,
+            };
+        });
+        return context.sendMessage(text, {
+            replyMarkup: {
+                inlineKeyboard: _.chunk(keyboardParams, 4),
+            },
+        });
+    }
+    const allSymbols = symbolStrings.join(',');
+    const text = `因為您輸入多支股票, 且分散於多檔追蹤群組中, 我會把 ${allSymbols} 從您所有的追蹤群組當中移除喔! 您確定要執行嗎?`;
+    await context.sendMessage(text, {
+        replyMarkup: {
+            inlineKeyboard: [
+                [
+                    {
+                        text: '確定全部刪除',
+                        callbackData: `DEL_FROM_WATCHLIST::ALL`,
+                    },
+                ],
+            ],
+        },
+    });
+};
+
+const handleDelSymbols = async (context, props) => {
+    const { userId } = utils.getSourceAndUserId(context);
+    const lists = context.state.watchlist.lists;
+    let listIds = props.listIds;
+    if (listIds[0] === 'ALL') {
+        listIds = lists.map(list => list.id);
+    }
+    const reqSymbolIds = props.symbolIds || context.state.watchlist.symbolIds;
+    return Promise.each(listIds, async listId => {
+        try {
+            const result = await rp({
+                uri: `${process.env.FUGLE_API_HOST}/bot/del_symbols`,
+                method: 'POST',
+                body: {
+                    userId,
+                    symbolIds: reqSymbolIds,
+                    watchlistId: listId,
+                },
+                json: true,
+                encoding: null,
+                timeout: 20000,
+            });
+            const symbols = result.symbols;
+            /*
+            const delSymbolIds = symbols.map(symbol => {
+                return symbol.id;
+            });
+            */
+            const list = result.list;
+            const symbolStrings = symbols.map(symbol => {
+                return `${symbol.name}(${symbol.id})`;
+            });
+            if (symbols.length) {
+                const text = `已幫您把 ${symbolStrings.join(',')} 從 [${list.title}] 移除了`;
+                const keyboardParams = [
+                    /*
+                    {
+                        text: '復原',
+                        callbackData: 'ALL_TO_WATCHLIST',
+                    },
+                    */
+                    {
+                        text: '查看自選追蹤',
+                        callbackData: 'SHOW_WATCHLIST',
+                    },
+                ];
+                return context.sendMessage(text, {
+                    replyMarkup: {
+                        inlineKeyboard: [keyboardParams],
+                    },
+                });
+            }
+            return context.sendMessage(`從 [${list.title}] 移除股票錯誤, 請稍候重試`);
+        } catch (err) {
+            console.log(err);
+            context.sendMessage('處理錯誤, 請稍候重試');
+        }
+    });
 };
 
 const handleRemoveWatchlist = async context => {
-    await context.sendText('stock action 3');
+    await context.sendText('目前小幫手暫時不支援此操作, 請到富果網站進行刪除, 謝謝');
 };
 
 const handleShowWatchlist = async context => {
@@ -308,6 +451,7 @@ module.exports = {
     handleAddSymbolsReq,
     handleAddSymbols,
     handleDelSymbolsReq,
+    handleDelSymbols,
     handleRemoveWatchlist,
     handleShowWatchlist,
     handleShowWatchlistDetail,
