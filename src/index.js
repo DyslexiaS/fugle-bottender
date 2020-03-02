@@ -28,7 +28,7 @@ const handleBotCommands = async (context, props) => {
     const {
         message: { text },
     } = context.event;
-    if (text.match(/^\/start/)) {
+    if (text.match(/^\/start$/)) {
         return handleRegisterHint(context);
     } else {
         return handleNotFound(context);

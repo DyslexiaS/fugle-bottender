@@ -1,5 +1,6 @@
+const rp = require('request-promise');
 const logger = require('../lib/logger');
-const { handleUnknown } = require('../handler/general');
+const { handleUnknown, handleRegisterHint } = require('../handler/general');
 
 module.exports = async (context, props) => {
     const {
@@ -39,6 +40,29 @@ module.exports = async (context, props) => {
     } else if (isCallbackQuery) {
         userId = `telegram-${callbackQuery.from.id}`;
         timestamp = new Date();
+    }
+    // only available for Fugle registered users
+    if (!text || (text !== '/start' && !text.match(/^[0-9]{10}$/) && !text.match(/^[0-9]{6}$/))) {
+        try {
+            const user = await rp({
+                uri: `${process.env.FUGLE_API_HOST}/bot/user`,
+                method: 'GET',
+                qs: {
+                    userId,
+                },
+                json: true,
+                encoding: null,
+                timeout: 20000,
+            });
+            if (!user) {
+                return handleRegisterHint(context);
+            }
+        } catch (e) {
+            console.log(e);
+            await context.sendMessage('確認用戶狀態錯誤, 請稍後再試, 謝謝');
+            // end chat
+            return;
+        }
     }
     // log
     if (isText) {

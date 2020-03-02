@@ -155,7 +155,7 @@ const handleShowWatchlist = async context => {
             uri: `${process.env.FUGLE_API_HOST}/bot/watchlists`,
             method: 'GET',
             qs: {
-                userId: userId,
+                userId,
             },
             json: true,
             encoding: null,
@@ -275,7 +275,9 @@ const handleWatchlistSettings = async (context, props) => {
             body: {
                 userId,
                 listId,
-                fields: { notification },
+                fields: {
+                    notification,
+                },
             },
             json: true,
             encoding: null,
