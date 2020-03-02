@@ -49,9 +49,9 @@ const handleRegisterReq = async context => {
 const handleRegister = async context => {
     const { text: otp, message } = context.event;
     const {
-        from: { id: userId, first_name, last_name },
+        from: { id: channelId, first_name, last_name },
     } = message;
-    if (!userId || !context.state.user.mobile) {
+    if (!channelId || !context.state.user.mobile) {
         return context.sendMessage('處理錯誤, 請稍候重試');
     }
     try {
@@ -62,7 +62,7 @@ const handleRegister = async context => {
                 mobile: context.state.user.mobile,
                 otp,
                 channel: 'telegram',
-                userId: `telegram-${userId}`,
+                userId: `telegram-${channelId}`,
                 profile: {
                     first_name,
                     last_name,
@@ -98,7 +98,84 @@ const handleRegister = async context => {
     }
 };
 
+const handleUnregister = async context => {
+    const { userId } = utils.getSourceAndUserId(context);
+    if (!userId) {
+        return context.sendMessage('處理錯誤, 請稍候重試');
+    }
+    try {
+        const result = await rp({
+            uri: `${process.env.FUGLE_API_HOST}/bot/unregister`,
+            method: 'POST',
+            body: {
+                userId,
+            },
+            json: true,
+            encoding: null,
+            timeout: 10000,
+        });
+        const { error } = result;
+        if (error) {
+            const text = error.message;
+            return context.sendMessage(text);
+        }
+        await context.sendMessage(
+            `您已成功解除帳號綁定, 在重新完成富果會員帳號綁定前, 將無法正常使用小幫手服務喔!`,
+        );
+    } catch (err) {
+        console.log(err);
+        return context.sendMessage('處理錯誤, 請稍候重試');
+    }
+};
+
+const handleLinkingStatus = async context => {
+    const { userId } = utils.getSourceAndUserId(context);
+    if (!userId) {
+        return context.sendMessage('處理錯誤, 請稍候重試');
+    }
+    try {
+        const user = await rp({
+            uri: `${process.env.FUGLE_API_HOST}/bot/linking_status`,
+            method: 'POST',
+            body: {
+                channel: 'telegram',
+                userId,
+            },
+            json: true,
+            encoding: null,
+            timeout: 20000,
+        });
+        const fugleUserId = user.userId;
+        if (fugleUserId !== null) {
+            // session.dialogData.fugleUserId = fugleUserId;
+            return context.sendMessage(`您已綁定富果會員的帳號: ${user.mobile}, 請問是否要解除?`, {
+                replyMarkup: {
+                    inlineKeyboard: [
+                        [
+                            {
+                                text: '解除綁定',
+                                callbackData: 'UNREGISTER',
+                            },
+                        ],
+                    ],
+                },
+            });
+        }
+        return context.sendMessage(
+            '您目前尚未綁定富果會員帳號, 您可以直接輸入<u>【手機號碼】</u> (格式：0912345678) 進行綁定',
+            {
+                parse_mode: 'HTML',
+            },
+        );
+    } catch (err) {
+        console.log(err);
+        return context.sendMessage('處理錯誤, 請稍候重試');
+    }
+};
+
 module.exports = {
     handleRegisterReq,
     handleRegister,
+    handleUnregister,
+    handleLinkingStatus,
 };

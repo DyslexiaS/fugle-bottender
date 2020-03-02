@@ -2,10 +2,12 @@
 const { withProps } = require('bottender');
 const { handleHelp } = require('./general');
 const {
+    handleAddSymbols,
     handleShowWatchlist,
     handleShowWatchlistDetail,
     handleWatchlistSettings,
 } = require('./watchlist');
+const { handleUnregister } = require('./user');
 
 const handleTelegramCallbackQuery = async (context, props) => {
     const { data: queryData } = context.event.callbackQuery;
@@ -28,6 +30,14 @@ const handleTelegramCallbackQuery = async (context, props) => {
             listId: match[1],
             notification: match[2] === 'true',
         });
+    }
+    match = queryData.match(/^UNREGISTER$/i);
+    if (match) {
+        return handleUnregister;
+    }
+    match = queryData.match(/^ADD_TO_WATCHLIST::(.+)$/i);
+    if (match) {
+        return withProps(handleAddSymbols, { listId: match[1] });
     }
 };
 

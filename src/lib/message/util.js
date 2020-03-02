@@ -102,7 +102,7 @@ const helpLinking = () => {
     const text =
         '' +
         `• 您可以輸入【FUGLE】查詢您的帳號狀態, 並進行綁定或解除綁定${textNewLine2}` +
-        `• 綁定 Fugle 帳號後, 您的自選追蹤將會與 Fugle 網站上的自選追蹤同步${textNewLine2}` +
+        `• 綁定富果帳號後, 您的自選追蹤將會與富果網站上的自選追蹤同步${textNewLine2}` +
         `• 您在網站上也可以針對每個追蹤清單設定開啟或關閉小幫手的通知`;
     return text;
 };

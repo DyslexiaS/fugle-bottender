@@ -16,9 +16,8 @@ const {
     handleDelSymbolsReq,
     handleRemoveWatchlist,
     handleShowWatchlist,
-    handleLinkingStatus,
 } = require('./handler/watchlist');
-const { handleRegisterReq, handleRegister } = require('./handler/user');
+const { handleRegisterReq, handleRegister, handleLinkingStatus } = require('./handler/user');
 const { handleSearch } = require('./handler/search');
 const { handleTelegramCallbackQuery } = require('./handler/telegram');
 const validateAndLog = require('./middleware/validate_logger');
@@ -59,7 +58,7 @@ const mainRoutes = () => {
         ),
         text(/(^HELP\s*(.*)|^怎麼.*|^[?？]\s*(.*))/i, handleHelp),
         text(/(^LIST$|^WATCHLIST$|自選|自選追蹤|追蹤)/i, handleShowWatchlist),
-        text(/(^FUGLE$|^連結$|^同步$|^綁定$)/i, handleLinkingStatus),
+        text(/(^FUGLE$|^富果$|^連結$|^同步$|^綁定$)/i, handleLinkingStatus),
         text(/^#$/i, handleSuggest),
         text('*', handleSearch),
         route('*', handleUnknown),

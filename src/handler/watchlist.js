@@ -21,12 +21,16 @@ const handleAddSymbolsReq = async (context, props) => {
         method: 'POST',
         body: {
             userId,
-            symbolQuery: symbolQuery,
+            symbolQuery,
         },
         json: true,
         encoding: null,
         timeout: 20000,
     });
+    if (result.error) {
+        const text = result.error.message;
+        return context.sendMessage(text);
+    }
     const { symbols, lists } = result;
     const symbolIds = symbols.map(symbol => symbol.id);
     const symbolStrings = symbols.map(symbol => `${symbol.name}(${symbol.id})`);
@@ -61,12 +65,12 @@ const handleAddSymbolsReq = async (context, props) => {
     const keyboardParams = lists.slice(0, 10).map(list => {
         return {
             text: list.title,
-            callbackData: 'ADD_TO_WATCHLIST',
+            callbackData: `ADD_TO_WATCHLIST::${list.id}`,
         };
     });
     await context.sendMessage(text, {
         replyMarkup: {
-            inlineKeyboard: keyboardParams,
+            inlineKeyboard: [keyboardParams],
         },
     });
 };
@@ -75,7 +79,7 @@ const handleAddSymbols = async (context, props) => {
     const { userId } = utils.getSourceAndUserId(context);
     const lists = context.state.watchlist.lists;
     let listId = props.listId;
-    const reqSymbolIds = props.symbolIds;
+    const reqSymbolIds = props.symbolIds || context.state.watchlist.symbolIds;
     /*
     if (results.response && results.response.entity) {
         const temp = lists.find((list) => { return list.title === results.response.entity; });
@@ -258,10 +262,6 @@ const handleShowWatchlistDetail = async (context, props) => {
     }
 };
 
-const handleLinkingStatus = async context => {
-    await context.sendText('stock action 5');
-};
-
 const handleWatchlistSettings = async (context, props) => {
     const { userId } = utils.getSourceAndUserId(context);
     if (!userId) {
@@ -305,10 +305,10 @@ const handleWatchlistSettings = async (context, props) => {
 
 module.exports = {
     handleAddSymbolsReq,
+    handleAddSymbols,
     handleDelSymbolsReq,
     handleRemoveWatchlist,
     handleShowWatchlist,
     handleShowWatchlistDetail,
-    handleLinkingStatus,
     handleWatchlistSettings,
 };
