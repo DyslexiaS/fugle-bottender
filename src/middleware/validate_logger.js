@@ -54,7 +54,7 @@ module.exports = async (context, props) => {
                 encoding: null,
                 timeout: 20000,
             });
-            if (!user) {
+            if (!user || !user.fugle_user) {
                 return handleRegisterHint(context);
             }
         } catch (e) {

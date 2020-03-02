@@ -167,7 +167,8 @@ const handleShowWatchlist = async context => {
             return context.sendMessage(text);
         }
         if (lists.length > 5) {
-            const text = '提醒: 您的追蹤群組數量較多, 若要查看全部群組, 請到網站操作';
+            const text =
+                '提醒: 您的追蹤群組數量較多, 以下僅列出五筆清單, 若要查看全部群組, 請到網站操作';
             await context.sendMessage(text);
         }
         await Promise.each(lists.slice(0, 5), async list => {
@@ -176,11 +177,9 @@ const handleShowWatchlist = async context => {
             const symbolStrings = list.symbols.reduce((prev, symbol) => {
                 symbolCount++;
                 const temp = `(${symbol.id}) ${symbol.name}`;
-                if (symbolCount > 6) {
+                if (symbolCount > 4) {
                     return prev;
-                } else if (symbolCount === 6) {
-                    return `${prev}${NEWLINE_LF}...共${list.symbols.length}檔`;
-                } else if (prev.length + temp.length >= 65) {
+                } else if (symbolCount === 4) {
                     return `${prev}${NEWLINE_LF}...共${list.symbols.length}檔`;
                 } else if (prev.length) {
                     return `${prev}${NEWLINE_LF}${temp}`;
