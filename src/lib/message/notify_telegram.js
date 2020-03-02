@@ -19,7 +19,7 @@ function revenue(symbolId, symbolName, contentSpecId, content, botSource) {
     const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}`;
     const keyboardParams = [
         {
-            text: '快速閱讀',
+            text: '到富果閱讀',
             url: webUrl1,
         },
         {
@@ -78,7 +78,7 @@ function important(symbolId, symbolName, contentSpecId, content) {
         const webUrl2 = `${process.env.FUGLE_WEB_HOST}/trade?symbol_id=${symbolId}`;
         const keyboardParams = [
             {
-                text: '快速閱讀',
+                text: '到富果閱讀',
                 url: webUrl1,
             },
             {
