@@ -51,11 +51,9 @@ const handleAddSymbolsReq = async (context, props) => {
         },
     });
     if (lists.length > 10) {
-        const message =
-            '提醒: 您的追蹤群組超過 Messenger 可顯示的上限, 若要編輯全部的自選, 請到網站操作';
-        return context.sendMessage(message);
-    }
-    if (lists.length === 1) {
+        const message = '提醒: 您的追蹤群組超過可顯示的上限, 若要編輯全部的自選, 請到網站操作';
+        await context.sendMessage(message);
+    } else if (lists.length === 1) {
         const listId = lists[0].id;
         return withProps(handleAddSymbols, {
             listId,
