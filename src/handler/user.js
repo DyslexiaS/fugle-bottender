@@ -78,14 +78,20 @@ const handleRegister = async context => {
             return context.sendMessage(text);
         }
         await context.sendMessage(
-            `您已成功完成帳號綁定, 可以開始使用小幫手囉! 現在就輸入任一檔股票試試看, 例如:【2330】`,
+            `您已成功完成帳號綁定, 可以開始使用小幫手囉! 現在就輸入任一檔股票試試看, 例如:【2330】\n\n` +
+                `若要接收重大訊息等通知資訊, 請<b>務必確認您有將通知功能打開</b>, 您可以點擊下方【查看自選追蹤】確認您的設定`,
             {
+                parse_mode: 'HTML',
                 replyMarkup: {
                     inlineKeyboard: [
                         [
                             {
                                 text: '查看說明',
                                 callbackData: 'HELP',
+                            },
+                            {
+                                text: '查看自選追蹤',
+                                callbackData: 'SHOW_WATCHLIST',
                             },
                         ],
                     ],

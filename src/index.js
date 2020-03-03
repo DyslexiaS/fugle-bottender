@@ -58,7 +58,7 @@ const mainRoutes = () => {
         ),
         text(/(^HELP\s*(.*)|^怎麼.*|^[?？]\s*(.*))/i, handleHelp),
         text(/(^LIST$|^WATCHLIST$|自選|自選追蹤|追蹤)/i, handleShowWatchlist),
-        text(/(^FUGLE$|^富果$|^連結$|^同步$|^綁定$)/i, handleLinkingStatus),
+        text(/(^FUGLE$|^富果$|^連結$|^同步$|^綁定$|^解綁$)/i, handleLinkingStatus),
         text(/^#$/i, handleSuggest),
         text('*', handleSearch),
         route('*', handleUnknown),
