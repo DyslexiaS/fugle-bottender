@@ -17,7 +17,7 @@ function callSendAPI(messageData) {
             console.log(result);
         })
         .catch(error => {
-            if (error.statusCode === 403 && error.error) {
+            if ((error.statusCode === 403 || error.statusCode === 400) && error.error) {
                 console.log(error.error);
             } else {
                 console.error(error);
