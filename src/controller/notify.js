@@ -2,11 +2,11 @@ const Promise = require('bluebird');
 const snakeCaseKeys = require('snakecase-keys');
 const telegramNotifyMessage = require('../lib/message/notify_telegram');
 const lineNotifyMessage = require('../lib/message/notify_line');
-const fbNotifyMessage = require('../lib/message/notify_facebook');
+// const fbNotifyMessage = require('../lib/message/notify_facebook');
 const chartGen = require('../lib/chart/generator');
 const telegramApi = require('../lib/native_api/telegram');
 const lineApi = require('../lib/native_api/line');
-const facebookApi = require('../lib/native_api/facebook');
+// const facebookApi = require('../lib/native_api/facebook');
 const logger = require('../lib/logger');
 
 const notifyTelegramUsers = async (body, userIds) => {
@@ -113,6 +113,7 @@ const notifyLineUsers = async (body, userIds) => {
     );
 };
 
+/*
 const notifyMessengerUsers = async (body, userIds) => {
     const { symbolId, symbolName, contentSpecId, content } = body;
     let msgs;
@@ -156,6 +157,7 @@ const notifyMessengerUsers = async (body, userIds) => {
         );
     });
 };
+*/
 
 async function notify(req, res) {
     const body = req.body;
@@ -164,9 +166,9 @@ async function notify(req, res) {
     res.status(200).end();
     const telegramUserIds = userIds.filter(id => id.match(/^telegram-/));
     const lineUserIds = userIds.filter(id => id.match(/^line-/));
-    const messengerUserIds = userIds.filter(id => id.match(/^facebook-/));
+    // const messengerUserIds = userIds.filter(id => id.match(/^facebook-/));
     await notifyTelegramUsers(body, telegramUserIds);
-    await notifyMessengerUsers(body, messengerUserIds);
+    // await notifyMessengerUsers(body, messengerUserIds);
     await notifyLineUsers(body, lineUserIds);
 }
 
