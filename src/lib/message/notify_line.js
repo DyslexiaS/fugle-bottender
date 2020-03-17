@@ -2,10 +2,26 @@
 const Promise = require('bluebird');
 const numeral = require('numeral');
 const moment = require('moment');
+const rp = require('request-promise');
 
-function revenue(symbolId, symbolName, contentSpecId, content, botSource) {
-    const imageBaseUrl = `https://s3-ap-northeast-1.amazonaws.com/${process.env.S3_BUCKET}`;
-    const ts = new Date().getTime();
+async function revenue(symbolId, symbolName, contentSpecId, content) {
+    let imageUrl =
+        'https://dk91kmsnfr6kg.cloudfront.net/images/logo144-1b44e4dbc828f92defbb2a582aec7f93v1.png';
+    try {
+        const res = await rp(
+            `https://api.fugle.tw/picture/v0/card/request?symbolId=${symbolId}&cardSpecId=FCRD000008&apiToken=${process.env.PICTURE_API_TOKEN}`,
+            {
+                json: true,
+            },
+        );
+        if (!res || !res.data || !res.data.url) {
+            console.log(`${res}`);
+        } else {
+            imageUrl = res.data.url;
+        }
+    } catch (e) {
+        console.log(e.message);
+    }
     const rawContent = content.rawContent[0];
     const title = `${symbolName}(${symbolId}) 公布了最新營收!`;
     const mom = `${numeral(rawContent.data.current.mom).format('0.00')}%`;
@@ -13,7 +29,6 @@ function revenue(symbolId, symbolName, contentSpecId, content, botSource) {
         `${rawContent.year}/${rawContent.month}: ` +
         `${numeral(rawContent.data.current.revenue).format('0,0')}仟元 \n` +
         `【YoY: ${rawContent.data.current.yoy}%】\n【MoM: ${mom}】`;
-    const imageUrl = `${imageBaseUrl}/revenue/${symbolId}.${botSource}.jpg?ts=${ts}`;
     const webUrl1 = `${process.env.FUGLE_WEB_HOST}/picture/cards?cards[]={"c":"FCRD000008","s":"${symbolId}"}`;
     const webUrl2 = `${process.env.FUGLE_WEB_HOST}/ai/${symbolId},revenue,kchart?utm_source=fuglebot&utm_medium=linebot&utm_campaign=fugle`;
     const message = {
