@@ -15,6 +15,15 @@ module.exports = async (context, props) => {
     } = context.event;
     // console.log(isText, isMessage, isSticker, isCallbackQuery);
     // console.log(JSON.stringify(context.event.rawEvent));
+    // messenger alert
+    if (context.platform === 'messenger') {
+        await context.sendMessage({
+            text: '您好, 因 Messenger 政策調整, 本服務已中止維護. ' +
+                '富果股市小幫手已轉移至 Telegram, 如您已註冊富果會員, 歡迎至 https://t.me/fuglestockbot 直接開始使用.\n' +
+                '服務移轉說明: https://support.fugle.tw/stock-knowledge/2620/'
+        });
+        return;
+    }
     // only allow specific events
     if (!isText && !isMessage && !isSticker && !isCallbackQuery) {
         return handleUnknown(context);
@@ -32,7 +41,7 @@ module.exports = async (context, props) => {
         timestamp = new Date(date * 1000);
         if (chatType !== 'private' || fromId !== chatId) {
             await context.sendMessage(
-                '不好意思，目前小幫手暫時不支援群組功能，如果您有其他需求, 歡迎輸入【#】告訴我!',
+                '不好意思，目前小幫手暫時不支援群組功能，如果您有其他需求, 歡迎輸入【#】告訴我!'
             );
             // end chat
             return;
