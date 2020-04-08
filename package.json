@@ -9,21 +9,17 @@
         "test": "jest"
     },
     "dependencies": {
-        "aws-sdk": "^2.593.0",
         "bluebird": "^3.7.2",
         "body-parser": "^1.19.0",
         "bottender": "1.2.1",
-        "d3": "~3.5.17",
         "express": "^4.17.1",
         "lodash": "^4.17.15",
         "mixpanel": "^0.11.0",
         "moment": "^2.22.2",
         "nodemon": "^2.0.2",
         "numeral": "^2.0.6",
-        "phantom": "^2.1.2",
         "request": "^2.88.2",
         "request-promise": "^4.2.5",
-        "s3": "^4.4.0",
         "snakecase-keys": "^3.1.2"
     },
     "devDependencies": {
