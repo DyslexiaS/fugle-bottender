@@ -18,7 +18,7 @@ const handleSearch = async (context, props) => {
         const searchText = `${wordResult.remain} ${wordResult.types.join(' ')}`.trim();
         const result = await rp({
             method: 'GET',
-            uri: `${process.env.FUGLE_API_HOST}/search/bot?q=${encodeURIComponent(searchText)}`,
+            uri: `${process.env.FUGLE_API_HOST}/bot/search?q=${encodeURIComponent(searchText)}`,
             json: true,
         });
         if (_.isEmpty(result) || result.message === 'notfind') {
@@ -47,7 +47,7 @@ const handleSearch = async (context, props) => {
                     },
                 });
             } else {
-                await Promise.each(result.elements, async symbolComplex => {
+                await Promise.each(result.elements, async (symbolComplex) => {
                     const { priceInfo } = symbolComplex;
                     await context.sendMessage(priceInfo);
                     await context.sendChatAction('typing');
@@ -65,7 +65,8 @@ const handleSearch = async (context, props) => {
             if (caLength === 0) {
                 await handleDataNotFound(context);
                 return;
-            } else if (caLength > 2) {
+            }
+            if (caLength > 2) {
                 const text = `您的搜尋總共傳回 ${caLength} 份資料, 請問您要全部顯示嗎?`;
                 const keyboardParams = [
                     {
@@ -85,7 +86,7 @@ const handleSearch = async (context, props) => {
             } else {
                 const imageInfo = await stockMsg.imageInfo(searchText, result.cards);
                 await context.sendPhoto(...imageInfo[0]);
-                await Promise.each(imageInfo.slice(1), async info => {
+                await Promise.each(imageInfo.slice(1), async (info) => {
                     await context.sendMessage(...info);
                 });
             }

@@ -18,7 +18,7 @@ const handleAddSymbolsReq = async (context, props) => {
     }
     const { userId } = utils.getSourceAndUserId(context);
     const result = await rp({
-        uri: `${process.env.FUGLE_API_HOST}/bot/add_symbols_request`,
+        uri: `${process.env.FUGLE_API_HOST}/bot/add-symbols-request`,
         method: 'POST',
         body: {
             userId,
@@ -33,8 +33,8 @@ const handleAddSymbolsReq = async (context, props) => {
         return context.sendMessage(text);
     }
     const { symbols, lists } = result;
-    const symbolIds = symbols.map(symbol => symbol.id);
-    const symbolStrings = symbols.map(symbol => `${symbol.name}(${symbol.id})`);
+    const symbolIds = symbols.map((symbol) => symbol.id);
+    const symbolStrings = symbols.map((symbol) => `${symbol.name}(${symbol.id})`);
     if (!symbols.length) {
         const message = '您所輸入的股票代碼或名稱不存在, 請重新確認喔';
         return context.sendMessage(message);
@@ -61,7 +61,7 @@ const handleAddSymbolsReq = async (context, props) => {
         });
     }
     const text = `請問您想將 ${symbolStrings.join(',')} 加入到哪個追蹤群組呢?`;
-    const keyboardParams = lists.slice(0, 10).map(list => {
+    const keyboardParams = lists.slice(0, 10).map((list) => {
         return {
             text: list.title,
             callbackData: `ADD_TO_WATCHLIST::${list.id}`,
@@ -87,7 +87,7 @@ const handleAddSymbols = async (context, props) => {
     */
     try {
         const result = await rp({
-            uri: `${process.env.FUGLE_API_HOST}/bot/add_symbols`,
+            uri: `${process.env.FUGLE_API_HOST}/bot/add-symbols`,
             method: 'POST',
             body: {
                 userId,
@@ -110,7 +110,7 @@ const handleAddSymbols = async (context, props) => {
         });
         */
         const list = result.list;
-        const symbolStrings = symbols.map(symbol => {
+        const symbolStrings = symbols.map((symbol) => {
             return `${symbol.name}(${symbol.id})`;
         });
         if (symbols.length) {
@@ -153,7 +153,7 @@ const handleDelSymbolsReq = async (context, props) => {
     }
     const { userId } = utils.getSourceAndUserId(context);
     const result = await rp({
-        uri: `${process.env.FUGLE_API_HOST}/bot/del_symbols_request`,
+        uri: `${process.env.FUGLE_API_HOST}/bot/del-symbols-request`,
         method: 'POST',
         body: {
             userId,
@@ -168,8 +168,8 @@ const handleDelSymbolsReq = async (context, props) => {
         return context.sendMessage(text);
     }
     const { symbols, lists } = result;
-    const symbolIds = symbols.map(symbol => symbol.id);
-    const symbolStrings = symbols.map(symbol => `${symbol.name}(${symbol.id})`);
+    const symbolIds = symbols.map((symbol) => symbol.id);
+    const symbolStrings = symbols.map((symbol) => `${symbol.name}(${symbol.id})`);
     if (!symbols.length) {
         const message = '您所輸入的股票代碼或名稱不存在, 請重新確認喔';
         return context.sendMessage(message);
@@ -194,7 +194,7 @@ const handleDelSymbolsReq = async (context, props) => {
     }
     if (symbols.length === 1) {
         const text = `請問您想將 ${symbolStrings.join(',')} 從哪個追蹤群組中移除呢?`;
-        const keyboardParams = lists.slice(0, 10).map(list => {
+        const keyboardParams = lists.slice(0, 10).map((list) => {
             return {
                 text: list.title,
                 callbackData: `DEL_FROM_WATCHLIST::${list.id}`,
@@ -227,13 +227,13 @@ const handleDelSymbols = async (context, props) => {
     const lists = context.state.watchlist.lists;
     let listIds = props.listIds;
     if (listIds[0] === 'ALL') {
-        listIds = lists.map(list => list.id);
+        listIds = lists.map((list) => list.id);
     }
     const reqSymbolIds = props.symbolIds || context.state.watchlist.symbolIds;
-    return Promise.each(listIds, async listId => {
+    return Promise.each(listIds, async (listId) => {
         try {
             const result = await rp({
-                uri: `${process.env.FUGLE_API_HOST}/bot/del_symbols`,
+                uri: `${process.env.FUGLE_API_HOST}/bot/del-symbols`,
                 method: 'POST',
                 body: {
                     userId,
@@ -251,7 +251,7 @@ const handleDelSymbols = async (context, props) => {
             });
             */
             const list = result.list;
-            const symbolStrings = symbols.map(symbol => {
+            const symbolStrings = symbols.map((symbol) => {
                 return `${symbol.name}(${symbol.id})`;
             });
             if (symbols.length) {
@@ -282,11 +282,11 @@ const handleDelSymbols = async (context, props) => {
     });
 };
 
-const handleRemoveWatchlist = async context => {
+const handleRemoveWatchlist = async (context) => {
     await context.sendText('目前小幫手暫時不支援此操作, 請到富果網站進行刪除, 謝謝');
 };
 
-const handleShowWatchlist = async context => {
+const handleShowWatchlist = async (context) => {
     const { userId } = utils.getSourceAndUserId(context);
     if (!userId) {
         return context.sendMessage('處理錯誤, 請稍候重試');
@@ -312,7 +312,7 @@ const handleShowWatchlist = async context => {
                 '提醒: 您的追蹤群組數量較多, 以下僅列出五筆清單, 若要查看全部群組, 請到網站操作';
             await context.sendMessage(text);
         }
-        await Promise.each(lists.slice(0, 5), async list => {
+        await Promise.each(lists.slice(0, 5), async (list) => {
             const notification = list.notification ? '(通知開啟)' : '(通知關閉)';
             let symbolCount = 0;
             const symbolStrings = list.symbols.reduce((prev, symbol) => {
@@ -375,7 +375,7 @@ const handleShowWatchlistDetail = async (context, props) => {
         if (symbols.length) {
             text = `您的 [${title}] 追蹤如下:${textNewLine2}`;
             text += symbols
-                .map(symbol => {
+                .map((symbol) => {
                     return `(${symbol.id}) ${symbol.name}`;
                 })
                 .join(textNewLine);

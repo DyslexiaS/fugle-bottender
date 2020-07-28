@@ -1,17 +1,17 @@
 const rp = require('request-promise');
 const utilMsg = require('../lib/message/util');
 
-const handleGreeting = async context => {
+const handleGreeting = async (context) => {
     const message = utilMsg.greeting();
     await context.sendMessage(...message);
 };
 
-const handleThanks = async context => {
+const handleThanks = async (context) => {
     const message = utilMsg.thanks();
     await context.sendMessage(message);
 };
 
-const handleSmile = async context => {
+const handleSmile = async (context) => {
     const message = utilMsg.smile();
     await context.sendMessage(message);
 };
@@ -33,7 +33,7 @@ const handleHelp = async (context, props) => {
     }
 };
 
-const handleSuggest = async context => {
+const handleSuggest = async (context) => {
     const text = '歡迎您透過客服系統提供我們任何想法與建議，我們會儘速回覆您，謝謝!';
     // TBD:
     // const supportId = Buffer.from(`${userId},${userName}`).toString('base64').replace(/=/g, '**');
@@ -50,29 +50,29 @@ const handleSuggest = async context => {
     });
 };
 
-const handleDataNotFound = async context => {
+const handleDataNotFound = async (context) => {
     const message =
         '不好意思, 您想搜尋的資料目前我找不到, 您可以找看看其他的項目, 或是輸入【#】跟我反應您遇到的問題喔! 謝謝!';
     await context.sendMessage(message);
 };
 
-const handleNotFound = async context => {
+const handleNotFound = async (context) => {
     const message = utilMsg.notFound();
     await context.sendMessage(...message);
 };
 
-const handleUnknown = async context => {
+const handleUnknown = async (context) => {
     await context.sendMessage('不好意思，小幫手目前暫時不支援此功能喔!');
 };
 
-const handleRegisterHint = async context => {
+const handleRegisterHint = async (context) => {
     const message = utilMsg.register();
     await context.sendMessage(message, {
         parse_mode: 'HTML',
     });
 };
 
-const handleGetStarted = async context => {
+const handleGetStarted = async (context) => {
     const { message } = context.event;
     const {
         from: { id: userId, first_name, last_name },
@@ -82,7 +82,7 @@ const handleGetStarted = async context => {
     }
     try {
         await rp({
-            uri: `${process.env.FUGLE_API_HOST}/bot/init_user`,
+            uri: `${process.env.FUGLE_API_HOST}/bot/register-req`,
             method: 'POST',
             body: {
                 channel: 'telegram',

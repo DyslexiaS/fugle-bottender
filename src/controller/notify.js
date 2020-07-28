@@ -20,10 +20,10 @@ const notifyTelegramUsers = async (body, userIds) => {
         return;
     }
     // send messages
-    return Promise.each(msgs, msg => {
-        return Promise.map(
+    await Promise.each(msgs, async (msg) => {
+        await Promise.map(
             userIds,
-            userId => {
+            (userId) => {
                 logger.info({
                     id: userId,
                     timestamp: +new Date(),
@@ -37,19 +37,19 @@ const notifyTelegramUsers = async (body, userIds) => {
                         text: msg[0],
                         ...snakeCaseKeys(msg[1]),
                     });
-                } else if (contentSpecId === 'FCNT000006') {
+                }
+                if (contentSpecId === 'FCNT000006') {
                     return telegramApi.sendPhoto({
                         chat_id: id,
                         photo: msg[0],
                         ...snakeCaseKeys(msg[1]),
                     });
-                } else {
-                    return telegramApi.sendMessage({
-                        chat_id: id,
-                        text: msg[0],
-                        ...snakeCaseKeys(msg[1]),
-                    });
                 }
+                return telegramApi.sendMessage({
+                    chat_id: id,
+                    text: msg[0],
+                    ...snakeCaseKeys(msg[1]),
+                });
             },
             {
                 concurrency: 5,
@@ -72,9 +72,9 @@ const notifyLineUsers = async (body, userIds) => {
         return;
     }
     // send messages
-    return Promise.map(
+    await Promise.map(
         userIds,
-        userId => {
+        (userId) => {
             logger.info({
                 id: userId,
                 timestamp: +new Date(),
@@ -91,12 +91,12 @@ const notifyLineUsers = async (body, userIds) => {
 };
 
 async function notify(req, res) {
-    const body = req.body;
-    const userIds = body.userIds;
+    const { body } = req;
+    const { userIds } = body;
     // early return to crawler
     res.status(200).end();
-    const telegramUserIds = userIds.filter(id => id.match(/^telegram-/));
-    const lineUserIds = userIds.filter(id => id.match(/^line-/));
+    const telegramUserIds = userIds.filter((id) => id.match(/^telegram-/));
+    const lineUserIds = userIds.filter((id) => id.match(/^line-/));
     await notifyTelegramUsers(body, telegramUserIds);
     await notifyLineUsers(body, lineUserIds);
 }

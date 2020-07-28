@@ -13,12 +13,12 @@ const NumberOrZero = (str) => (Number.isNaN(Number(str)) ? 0 : Number(str));
 
 async function getFugleContent(contentId) {
     const res = await rp({
-        uri: `${process.env.FUGLE_API_HOST}/data/new_content/${contentId}`,
+        uri: `${process.env.FUGLE_API_HOST}/data/contents/${contentId}`,
         method: 'GET',
         json: true,
         timeout: 10000,
     });
-    return res.rawContent;
+    return res.data.content.rawContent;
 }
 
 async function getDateAfterNTradingDays(nDays) {
