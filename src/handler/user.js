@@ -2,7 +2,7 @@ const rp = require('request-promise');
 // const Promise = require('bluebird');
 const utils = require('../lib/utils');
 
-const handleRegisterReq = async context => {
+const handleRegisterReq = async (context) => {
     const { text: mobile } = context.event;
     const { userId } = utils.getSourceAndUserId(context);
     if (!userId) {
@@ -10,7 +10,7 @@ const handleRegisterReq = async context => {
     }
     try {
         const result = await rp({
-            uri: `${process.env.FUGLE_API_HOST}/bot/register_req`,
+            uri: `${process.env.FUGLE_API_HOST}/bot/register-req`,
             method: 'POST',
             body: {
                 mobile,
@@ -46,7 +46,7 @@ const handleRegisterReq = async context => {
     }
 };
 
-const handleRegister = async context => {
+const handleRegister = async (context) => {
     const { text: otp, message } = context.event;
     const {
         from: { id: channelId, first_name, last_name },
@@ -104,7 +104,7 @@ const handleRegister = async context => {
     }
 };
 
-const handleUnregister = async context => {
+const handleUnregister = async (context) => {
     const { userId } = utils.getSourceAndUserId(context);
     if (!userId) {
         return context.sendMessage('處理錯誤, 請稍候重試');
@@ -134,14 +134,14 @@ const handleUnregister = async context => {
     }
 };
 
-const handleLinkingStatus = async context => {
+const handleLinkingStatus = async (context) => {
     const { userId } = utils.getSourceAndUserId(context);
     if (!userId) {
         return context.sendMessage('處理錯誤, 請稍候重試');
     }
     try {
         const user = await rp({
-            uri: `${process.env.FUGLE_API_HOST}/bot/linking_status`,
+            uri: `${process.env.FUGLE_API_HOST}/bot/linking-status`,
             method: 'POST',
             body: {
                 channel: 'telegram',
