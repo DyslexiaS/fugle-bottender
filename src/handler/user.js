@@ -1,5 +1,4 @@
 const rp = require('request-promise');
-// const Promise = require('bluebird');
 const utils = require('../lib/utils');
 
 const handleRegisterReq = async (context) => {
@@ -27,6 +26,7 @@ const handleRegisterReq = async (context) => {
         context.setState({
             user: {
                 mobile,
+                registering: true,
             },
         });
         let text;
@@ -51,7 +51,10 @@ const handleRegister = async (context) => {
     const {
         from: { id: channelId, first_name, last_name },
     } = message;
-    if (!channelId || !context.state.user.mobile) {
+    if (!context?.state?.user?.registering) {
+        return context.sendMessage('處理錯誤, 請輸入手機號碼重新註冊');
+    }
+    if (!channelId || !context?.state?.user?.mobile) {
         return context.sendMessage('處理錯誤, 請稍候重試');
     }
     try {
@@ -77,6 +80,12 @@ const handleRegister = async (context) => {
             const text = error.message;
             return context.sendMessage(text);
         }
+        context.setState({
+            user: {
+                mobile: context.state.user.mobile,
+                registering: false,
+            },
+        });
         await context.sendMessage(
             `您已成功完成帳號綁定, 可以開始使用小幫手囉! 現在就輸入任一檔股票試試看, 例如:【2330】\n\n` +
                 `若要接收重大訊息等通知資訊, 請<b>務必確認您有將通知功能打開</b>, 您可以點擊下方【查看自選追蹤】確認您的設定`,
