@@ -51,6 +51,12 @@ For more information, check [nodemon's repo](https://github.com/remy/nodemon)
 Run the bot without being monitored.\
 The bot won't be restarted when you change anything in `index.js`
 
+## Telegram
+
+### Telegram Setup
+
+https://bottender.js.org/docs/en/channel-telegram-setup#set-up-webhook-for-development
+
 ### Telegram Rate Limit
 
 https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this

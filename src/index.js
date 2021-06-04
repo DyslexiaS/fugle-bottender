@@ -24,23 +24,31 @@ const validateAndLog = require('./middleware/validate_logger');
 const fullwidth = require('./middleware/fullwidth');
 const typingAction = require('./middleware/typing_action');
 
-const handleBotCommands = async (context, props) => {
+const handleBotCommands = async (context) => {
     const {
-        message: { text },
+        message: { text: msgText },
     } = context.event;
-    if (text.match(/^\/start$/)) {
+    if (msgText.match(/^\/start$/)) {
         return handleRegisterHint(context);
-    } else {
-        return handleNotFound(context);
     }
+    return handleNotFound(context);
+};
+
+const handleSearchOrRegister = async (context) => {
+    const {
+        message: { text: msgText },
+    } = context.event;
+    if (context?.state?.user?.registering && msgText.match(/^[0-9]{6}$/)) {
+        return handleRegister(context);
+    }
+    return handleSearch(context);
 };
 
 const mainRoutes = () => {
     return router([
         telegram.callbackQuery(handleTelegramCallbackQuery),
         text(/^\//, handleBotCommands),
-        text(/^[0-9]{10}$/, handleRegisterReq),
-        text(/^[0-9]{6}$/, handleRegister),
+        text(/^09[0-9]{8}$/, handleRegisterReq),
         text(/(^hi.*|^hello.*|[你|妳|您]好.*|^哈囉)/i, handleGreeting),
         text(/(^好棒.*$|^你好棒.*$|^thank.*$|^謝謝.*$|^感謝.*$|^沒關係.*$)/i, handleThanks),
         text(
@@ -58,9 +66,9 @@ const mainRoutes = () => {
         ),
         text(/(^HELP\s*(.*)|問題|詢問|^怎麼.*|^[?？]\s*(.*))/i, handleHelp),
         text(/(^LIST$|^WATCHLIST$|自選|自選追蹤|追蹤)/i, handleShowWatchlist),
-        text(/(^FUGLE$|^富果$|^連結$|^同步$|^綁定$|^解綁$)/i, handleLinkingStatus),
+        text(/(^FUGLE$|^富果$|^連結$|^同步$|^綁定$|^解綁$|^解除綁定$)/i, handleLinkingStatus),
         text(/(^#$|客服)/i, handleSuggest),
-        text('*', handleSearch),
+        text('*', handleSearchOrRegister),
         route('*', handleUnknown),
     ]);
 };
